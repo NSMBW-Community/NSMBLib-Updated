@@ -45,7 +45,7 @@ static PyObject *nsmblib_decompress11LZS(PyObject *self, PyObject *args) {
      *  - str data (containing the compressed data)
      */
     
-    const char *data;
+    const u8 *data;
     int datalength;
     
     u8 *decoded;
@@ -54,8 +54,8 @@ static PyObject *nsmblib_decompress11LZS(PyObject *self, PyObject *args) {
     
     /* used while decompressing */
     int curr_size;
-    const char *source;
-    u8 *dest, *end;
+    const u8 *source;
+    u8 *dest;
     int len, i, j, cdest, disp, flag;
     u8 b1, b2, b3, bt, flags;
     
@@ -91,13 +91,12 @@ static PyObject *nsmblib_decompress11LZS(PyObject *self, PyObject *args) {
     }
     
     /* allocate a buffer */
-    decoded = (char*)PyMem_Malloc(decompsize);
+    decoded = (u8*)PyMem_Malloc(decompsize);
     if (decoded == NULL)
         return PyErr_NoMemory();
     
     /* now we can start going through everything */
     dest = decoded;
-    end = &decoded[decompsize];
     curr_size = 0;
     
     while (curr_size < decompsize) {
@@ -185,14 +184,14 @@ static PyObject *nsmblib_decodeTileset(PyObject *self, PyObject *args) {
      *  - str texture (containing the raw texture data)
      */
     
-    const char *texture;
+    const u8 *texture;
     int texlength;
     u8 *decoded;
     PyObject *retvalue;
     
     /* used later in the pixel loop */
-    const char *pointer;
-    unsigned int *output;
+    const u8 *pointer;
+    u32 *output;
     int tx, ty, i;
     
     /* get the arguments */
@@ -206,7 +205,7 @@ static PyObject *nsmblib_decodeTileset(PyObject *self, PyObject *args) {
     }
     
     /* allocate memory */
-    decoded = (char*)PyMem_Malloc(1048576);
+    decoded = (u8*)PyMem_Malloc(1048576);
     if (decoded == NULL)
         return PyErr_NoMemory();
     
@@ -214,7 +213,7 @@ static PyObject *nsmblib_decodeTileset(PyObject *self, PyObject *args) {
     tx = 0;
     ty = 0;
     pointer = texture;
-    output = (int*)decoded;
+    output = (u32*)decoded;
     
     for (i = 0; i < 16384; i++) {
         /* loop through every row in this tile */
@@ -230,23 +229,23 @@ static PyObject *nsmblib_decodeTileset(PyObject *self, PyObject *args) {
             for (; x < endx; x++) {
                 /* calculate this pixel */
                 int pos = sourcey | x;
-                unsigned char a = *(pointer++);
-                unsigned char b = *(pointer++);
-                unsigned short ab = a << 8 | b;
+                u8 a = *(pointer++);
+                u8 b = *(pointer++);
+                u16 ab = a << 8 | b;
                 
                 if ((ab & 0x8000) == 0) {
                     /* RGB4A3 */
-                    unsigned char alpha = ab >> 12;
-                    unsigned char alpha255 = alpha << 5 | alpha << 2 | alpha >> 1;
-                    unsigned char red = (ab >> 8) & 0xF;
-                    unsigned char green = (ab >> 4) & 0xF;
-                    unsigned char blue = ab & 0xF;
-                    unsigned int x = alpha255 << 24 | red << 20 | red << 16 | green << 12 | green << 8 | blue << 4 | blue;
+                    u8 alpha = ab >> 12;
+                    u8 alpha255 = alpha << 5 | alpha << 2 | alpha >> 1;
+                    u8 red = (ab >> 8) & 0xF;
+                    u8 green = (ab >> 4) & 0xF;
+                    u8 blue = ab & 0xF;
+                    u32 x = alpha255 << 24 | red << 20 | red << 16 | green << 12 | green << 8 | blue << 4 | blue;
                     
                     /* this code from Qt's PREMUL() inline function in
                      * src/gui/painting/qdrawhelper_p.h */
-                    unsigned int al = x >> 24;
-                    unsigned int t = (x & 0xff00ff) * al;
+                    u32 al = x >> 24;
+                    u32 t = (x & 0xff00ff) * al;
                     t = (t + ((t >> 8) & 0xff00ff) + 0x800080) >> 8;
                     t &= 0xff00ff;
                     x = ((x >> 8) & 0xff) * al;
@@ -258,11 +257,11 @@ static PyObject *nsmblib_decodeTileset(PyObject *self, PyObject *args) {
                     
                 } else {
                     /* RGB555 */
-                    unsigned char red = (ab >> 10) & 0x1F;
+                    u8 red = (ab >> 10) & 0x1F;
                     red = red << 3 | red >> 2;
-                    unsigned char green = (ab >> 5) & 0x1F;
+                    u8 green = (ab >> 5) & 0x1F;
                     green = green << 3 | green >> 2;
-                    unsigned char blue = ab & 0x1F;
+                    u8 blue = ab & 0x1F;
                     blue = blue << 3 | blue >> 2;
                     output[pos] = 0xFF000000 | red << 16 | green << 8 | blue;
                 }
@@ -278,7 +277,7 @@ static PyObject *nsmblib_decodeTileset(PyObject *self, PyObject *args) {
     }
     
     /* return it */
-    retvalue = PyBytes_FromStringAndSize(decoded, 1048576);
+    retvalue = PyBytes_FromStringAndSize((const char*)decoded, 1048576);
     PyMem_Free(decoded);
     
     return retvalue;
@@ -334,7 +333,7 @@ initnsmblib(void)
 #if PY_MAJOR_VERSION >= 3
     PyObject *module = PyModule_Create(&moduledef);
 #else
-    PyObject *module = Py_InitModule("nsmblib", NSMBLibMethods);
+    Py_InitModule("nsmblib", NSMBLibMethods);
 #endif
 
 #if PY_MAJOR_VERSION >= 3

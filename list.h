@@ -16,7 +16,7 @@ typedef struct IntList_t {
 	int *Elements;
 } IntList;
 
-IntList *IntList_new();
+IntList *IntList_new(void);
 void IntList_init(IntList *list);
 void IntList_free(IntList *list);
 void IntList_delete(IntList *list);

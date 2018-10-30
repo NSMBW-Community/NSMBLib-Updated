@@ -1,6 +1,6 @@
 #include "list.h"
 
-IntList *IntList_new() {
+IntList *IntList_new(void) {
 	/* allocates a new IntList and returns a pointer to it
 	 * must be cleaned up with IntList_delete later,
 	 * and NOT IntList_free */
