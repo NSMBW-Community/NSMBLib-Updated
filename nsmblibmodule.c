@@ -230,13 +230,18 @@ static PyObject *nsmblib_decodeTileset(PyObject *self, PyObject *args) {
             for (; x < endx; x++) {
                 /* calculate this pixel */
                 int pos = sourcey | x;
-                char a = *(pointer++);
-                char b = *(pointer++);
+                unsigned char a = *(pointer++);
+                unsigned char b = *(pointer++);
+                unsigned short ab = a << 8 | b;
                 
-                if ((a & 0x80) == 0) {
-                    /* use alpha */
-                    char alpha = (a & 0x70) << 1;
-                    unsigned int x = (alpha << 24) | ((a & 0xF) << 20) | ((b & 0xF0) << 8) | ((b & 0xF) << 4);
+                if ((ab & 0x8000) == 0) {
+                    /* RGB4A3 */
+                    unsigned char alpha = ab >> 12;
+                    unsigned char alpha255 = alpha << 5 | alpha << 2 | alpha >> 1;
+                    unsigned char red = (ab >> 8) & 0xF;
+                    unsigned char green = (ab >> 4) & 0xF;
+                    unsigned char blue = ab & 0xF;
+                    unsigned int x = alpha255 << 24 | red << 20 | red << 16 | green << 12 | green << 8 | blue << 4 | blue;
                     
                     /* this code from Qt's PREMUL() inline function in
                      * src/gui/painting/qdrawhelper_p.h */
@@ -252,8 +257,14 @@ static PyObject *nsmblib_decodeTileset(PyObject *self, PyObject *args) {
                     output[pos] = x;
                     
                 } else {
-                    /* no alpha */
-                    output[pos] = 0xFF000000 | ((a & 0x7C) << 17) | ((a & 0x3) << 14) | ((b & 0xE0) << 6) | ((b & 0x1F) << 3);
+                    /* RGB555 */
+                    unsigned char red = (ab >> 10) & 0x1F;
+                    red = red << 3 | red >> 2;
+                    unsigned char green = (ab >> 5) & 0x1F;
+                    green = green << 3 | green >> 2;
+                    unsigned char blue = ab & 0x1F;
+                    blue = blue << 3 | blue >> 2;
+                    output[pos] = 0xFF000000 | red << 16 | green << 8 | blue;
                 }
             }
         }
