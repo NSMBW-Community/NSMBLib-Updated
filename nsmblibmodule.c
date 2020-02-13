@@ -1,3 +1,4 @@
+#define Py_LIMITED_API
 #include <Python.h>
 #include "bytesobject.h"
 #define s32 signed int

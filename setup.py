@@ -1,5 +1,9 @@
+import sys
+
 from setuptools import setup
 from distutils.extension import Extension
+
+sys.argv.extend(['--py-limited-api', 'cp32'])
 
 setup(
   name='nsmblib',
