@@ -18,7 +18,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install Microsoft Visual C++ Compiler for Python 2.7
-      if: (matrix.platform == 'ubuntu-latest') && (matrix.python-version == '2.7')
+      if: (matrix.platform == 'windows-latest') && (matrix.python-version == '2.7')
       uses: crazy-max/ghaction-chocolatey@v1
       with:
         args: install vcpython27
