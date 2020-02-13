@@ -17,6 +17,8 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Install Visual Studio
+      uses: ilammy/msvc-dev-cmd@v1
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -27,5 +29,5 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: build
+        name: build-${{ matrix.platform }}-${{ matrix.python-version }}
         path: dist
