@@ -46,7 +46,7 @@ jobs:
     container: quay.io/pypa/manylinux2014_x86_64
     
     env:
-      pycommand: /opt/python/cp${{ python-version }}-cp${{ python-version }}m/bin/python
+      pycommand: /opt/python/cp${{ matrix.python-version }}-cp${{ matrix.python-version }}m/bin/python
 
     steps:
     - uses: actions/checkout@v2
