@@ -1,4 +1,5 @@
 #define Py_LIMITED_API
+#define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include "bytesobject.h"
 #define s32 signed int
@@ -47,7 +48,7 @@ static PyObject *nsmblib_decompress11LZS(PyObject *self, PyObject *args) {
      */
     
     const u8 *data;
-    int datalength;
+    Py_ssize_t datalength;
     
     u8 *decoded;
     PyObject *retvalue;
@@ -186,7 +187,7 @@ static PyObject *nsmblib_decodeTileset(PyObject *self, PyObject *args) {
      */
     
     const u8 *texture;
-    int texlength;
+    Py_ssize_t texlength;
     u8 *decoded;
     PyObject *retvalue;
     
