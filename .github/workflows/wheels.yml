@@ -37,14 +37,13 @@ jobs:
         name: build-${{ matrix.platform }}-${{ matrix.python-version }}
         path: dist
 
-  manylinux-27:
+  linux-27:
 
     strategy:
       matrix:
         python-version: [2.7]
 
     runs-on: ubuntu-latest
-    
 
     steps:
     - uses: actions/checkout@v2
@@ -58,7 +57,7 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: build-manylinux-27
+        name: build-manylinux-{pyver}
         path: dist
 
   manylinux-35:
@@ -71,10 +70,17 @@ jobs:
     - name: Install dependencies
       run: |
         /opt/python/cp35-cp35m/bin/python -m pip install --upgrade pip
-        /opt/python/cp35-cp35m/bin/python -m pip install setuptools wheel
+        /opt/python/cp35-cp35m/bin/python -m pip install setuptools wheel auditwheel
     - name: Build
       run: |
         /opt/python/cp35-cp35m/bin/python setup.py bdist_wheel
+    - name: Run auditwheel
+      run: |
+        mkdir dist/wheelhouse
+        /opt/python/cp35-cp35m/bin/python -m auditwheel repair -w dist/wheelhouse/ bindings/dist/*.whl
+        rm dist/*.whl
+        mv dist/wheelhouse/* bindings/dist/
+        rm -rf dist/wheelhouse
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
@@ -91,10 +97,17 @@ jobs:
     - name: Install dependencies
       run: |
         /opt/python/cp36-cp36m/bin/python -m pip install --upgrade pip
-        /opt/python/cp36-cp36m/bin/python -m pip install setuptools wheel
+        /opt/python/cp36-cp36m/bin/python -m pip install setuptools wheel auditwheel
     - name: Build
       run: |
         /opt/python/cp36-cp36m/bin/python setup.py bdist_wheel
+    - name: Run auditwheel
+      run: |
+        mkdir dist/wheelhouse
+        /opt/python/cp36-cp36m/bin/python -m auditwheel repair -w dist/wheelhouse/ bindings/dist/*.whl
+        rm dist/*.whl
+        mv dist/wheelhouse/* bindings/dist/
+        rm -rf dist/wheelhouse
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
@@ -111,10 +124,17 @@ jobs:
     - name: Install dependencies
       run: |
         /opt/python/cp37-cp37m/bin/python -m pip install --upgrade pip
-        /opt/python/cp37-cp37m/bin/python -m pip install setuptools wheel
+        /opt/python/cp37-cp37m/bin/python -m pip install setuptools wheel auditwheel
     - name: Build
       run: |
         /opt/python/cp37-cp37m/bin/python setup.py bdist_wheel
+    - name: Run auditwheel
+      run: |
+        mkdir dist/wheelhouse
+        /opt/python/cp37-cp37m/bin/python -m auditwheel repair -w dist/wheelhouse/ bindings/dist/*.whl
+        rm dist/*.whl
+        mv dist/wheelhouse/* bindings/dist/
+        rm -rf dist/wheelhouse
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
@@ -131,10 +151,17 @@ jobs:
     - name: Install dependencies
       run: |
         /opt/python/cp38-cp38/bin/python -m pip install --upgrade pip
-        /opt/python/cp38-cp38/bin/python -m pip install setuptools wheel
+        /opt/python/cp38-cp38/bin/python -m pip install setuptools wheel auditwheel
     - name: Build
       run: |
         /opt/python/cp38-cp38/bin/python setup.py bdist_wheel
+    - name: Run auditwheel
+      run: |
+        mkdir dist/wheelhouse
+        /opt/python/cp38-cp38/bin/python -m auditwheel repair -w dist/wheelhouse/ bindings/dist/*.whl
+        rm dist/*.whl
+        mv dist/wheelhouse/* bindings/dist/
+        rm -rf dist/wheelhouse
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
