@@ -81,9 +81,9 @@ jobs:
     - name: Run auditwheel
       run: |
         mkdir dist/wheelhouse
-        /opt/python/cp35-cp35m/bin/python -m auditwheel repair -w dist/wheelhouse/ bindings/dist/*.whl
+        /opt/python/cp35-cp35m/bin/python -m auditwheel repair -w dist/wheelhouse/ dist/*.whl
         rm dist/*.whl
-        mv dist/wheelhouse/* bindings/dist/
+        mv dist/wheelhouse/* dist/
         rm -rf dist/wheelhouse
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
@@ -108,9 +108,9 @@ jobs:
     - name: Run auditwheel
       run: |
         mkdir dist/wheelhouse
-        /opt/python/cp36-cp36m/bin/python -m auditwheel repair -w dist/wheelhouse/ bindings/dist/*.whl
+        /opt/python/cp36-cp36m/bin/python -m auditwheel repair -w dist/wheelhouse/ dist/*.whl
         rm dist/*.whl
-        mv dist/wheelhouse/* bindings/dist/
+        mv dist/wheelhouse/* dist/
         rm -rf dist/wheelhouse
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
@@ -135,9 +135,9 @@ jobs:
     - name: Run auditwheel
       run: |
         mkdir dist/wheelhouse
-        /opt/python/cp37-cp37m/bin/python -m auditwheel repair -w dist/wheelhouse/ bindings/dist/*.whl
+        /opt/python/cp37-cp37m/bin/python -m auditwheel repair -w dist/wheelhouse/ dist/*.whl
         rm dist/*.whl
-        mv dist/wheelhouse/* bindings/dist/
+        mv dist/wheelhouse/* dist/
         rm -rf dist/wheelhouse
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
@@ -162,9 +162,9 @@ jobs:
     - name: Run auditwheel
       run: |
         mkdir dist/wheelhouse
-        /opt/python/cp38-cp38/bin/python -m auditwheel repair -w dist/wheelhouse/ bindings/dist/*.whl
+        /opt/python/cp38-cp38/bin/python -m auditwheel repair -w dist/wheelhouse/ dist/*.whl
         rm dist/*.whl
-        mv dist/wheelhouse/* bindings/dist/
+        mv dist/wheelhouse/* dist/
         rm -rf dist/wheelhouse
     - name: Upload artifacts
       uses: actions/upload-artifact@v1

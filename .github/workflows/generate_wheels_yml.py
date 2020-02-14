@@ -101,9 +101,9 @@ for pyver in ['35', '36', '37', '38']:
     - name: Run auditwheel
       run: |
         mkdir dist/wheelhouse
-        {pycommand} -m auditwheel repair -w dist/wheelhouse/ bindings/dist/*.whl
+        {pycommand} -m auditwheel repair -w dist/wheelhouse/ dist/*.whl
         rm dist/*.whl
-        mv dist/wheelhouse/* bindings/dist/
+        mv dist/wheelhouse/* dist/
         rm -rf dist/wheelhouse
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
