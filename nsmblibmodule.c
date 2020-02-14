@@ -258,11 +258,12 @@ static PyObject *nsmblib_decodeTileset(PyObject *self, PyObject *args) {
                     
                 } else {
                     /* RGB555 */
-                    u8 red = (ab >> 10) & 0x1F;
+                    u8 red, green, blue;
+                    red = (ab >> 10) & 0x1F;
                     red = red << 3 | red >> 2;
-                    u8 green = (ab >> 5) & 0x1F;
+                    green = (ab >> 5) & 0x1F;
                     green = green << 3 | green >> 2;
-                    u8 blue = ab & 0x1F;
+                    blue = ab & 0x1F;
                     blue = blue << 3 | blue >> 2;
                     output[pos] = 0xFF000000 | red << 16 | green << 8 | blue;
                 }
