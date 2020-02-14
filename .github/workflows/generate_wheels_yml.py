@@ -8,8 +8,8 @@ on: [push]
 jobs:
 """)
 
-if False:
-    yml.append("""
+# Mac & Windows builds
+yml.append("""
   mac_windows:
 
     strategy:
@@ -44,17 +44,22 @@ if False:
         path: dist
 """)
 
+# Linux builds: we need one job for each Python version because GitHub actions is stupid
 for pyver in ['27', '35', '36', '37', '38']:
+    # In particular, there seems to be no way (as of 2020-02-13) to accomplish this in the YAML
+    # (unlike in Azure Pipelines)
     if pyver == '27':
         pycommand = 'python'
     elif pyver == '38':
         pycommand = '/opt/python/cp38-cp38/bin/python'
     else:
         pycommand = f'/opt/python/cp{pyver}-cp{pyver}m/bin/python'
+
     yml.append(f"""
   manylinux-{pyver}:
 """)
 
+    # We don't build manylinux wheels for 2.7; just use the provided one
     if pyver == '27':
         yml.append(f"""
     strategy:
@@ -82,5 +87,6 @@ for pyver in ['27', '35', '36', '37', '38']:
         path: dist
 """)
 
+# And finally, write the output file
 with open('wheels.yml', 'w', encoding='utf-8') as f:
     f.write(''.join(yml))
