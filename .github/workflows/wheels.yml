@@ -1,0 +1,142 @@
+
+name: Build wheels
+on: [push]
+
+jobs:
+
+  mac_windows:
+
+    strategy:
+      matrix:
+        python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
+        platform: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ilammy/msvc-dev-cmd@v1
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install Microsoft Visual C++ Compiler for Python 2.7
+      if: (matrix.platform == 'windows-latest') && (matrix.python-version == '2.7')
+      uses: crazy-max/ghaction-chocolatey@v1
+      with:
+        args: install vcpython27
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install setuptools wheel
+    - name: Build
+      run: |
+        python setup.py bdist_wheel
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-${{ matrix.platform }}-${{ matrix.python-version }}
+        path: dist
+
+  manylinux-27:
+
+    strategy:
+      matrix:
+        python-version: [2.7]
+
+    runs-on: ubuntu-latest
+    
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install setuptools wheel
+    - name: Build
+      run: |
+        python setup.py bdist_wheel
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-manylinux-27
+        path: dist
+
+  manylinux-35:
+
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        /opt/python/cp35-cp35m/bin/python -m pip install --upgrade pip
+        /opt/python/cp35-cp35m/bin/python -m pip install setuptools wheel
+    - name: Build
+      run: |
+        /opt/python/cp35-cp35m/bin/python setup.py bdist_wheel
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-manylinux-35
+        path: dist
+
+  manylinux-36:
+
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        /opt/python/cp36-cp36m/bin/python -m pip install --upgrade pip
+        /opt/python/cp36-cp36m/bin/python -m pip install setuptools wheel
+    - name: Build
+      run: |
+        /opt/python/cp36-cp36m/bin/python setup.py bdist_wheel
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-manylinux-36
+        path: dist
+
+  manylinux-37:
+
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        /opt/python/cp37-cp37m/bin/python -m pip install --upgrade pip
+        /opt/python/cp37-cp37m/bin/python -m pip install setuptools wheel
+    - name: Build
+      run: |
+        /opt/python/cp37-cp37m/bin/python setup.py bdist_wheel
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-manylinux-37
+        path: dist
+
+  manylinux-38:
+
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        /opt/python/cp38-cp38/bin/python -m pip install --upgrade pip
+        /opt/python/cp38-cp38/bin/python -m pip install setuptools wheel
+    - name: Build
+      run: |
+        /opt/python/cp38-cp38/bin/python setup.py bdist_wheel
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-manylinux-38
+        path: dist
