@@ -70,7 +70,7 @@ yml.append("""
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: build-manylinux-27
+        name: build-linux-27
         path: dist
 """)
 
