@@ -44,17 +44,19 @@ jobs:
         platform: [ubuntu-latest]
     runs-on: ${{ matrix.platform }}
     container: quay.io/pypa/manylinux2014_x86_64
+    
+    env:
+      pycommand: /opt/python/cp${{ python-version }}-cp${{ python-version }}m/bin/python
 
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
       run: |
-        python -m ensurepip
-        python -m pip install --upgrade pip
-        pip install setuptools wheel
+        ${{ pycommand }} -m pip install --upgrade pip
+        ${{ pycommand }} -m pip install setuptools wheel
     - name: Build
       run: |
-        python setup.py bdist_wheel
+        ${{ pycommand }} setup.py bdist_wheel
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
