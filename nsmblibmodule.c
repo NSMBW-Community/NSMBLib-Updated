@@ -187,6 +187,7 @@ void LZSearch(u8 *data, int offset, int length, int *ret1, int *ret2) {
     int windowsize, maxmatchamount;
     int start;
     int recordoffset, recordlen;
+    int matchstart, thismaxmatchamount, matchlen;
 
     windowsize = 0x1000;
     maxmatchamount = 0xFFFF + 273;
@@ -203,8 +204,7 @@ void LZSearch(u8 *data, int offset, int length, int *ret1, int *ret2) {
 
     recordoffset = -1;
     recordlen = 3;
-    for (int matchstart = start; matchstart < offset; matchstart++) {
-        int thismaxmatchamount, matchlen;
+    for (matchstart = start; matchstart < offset; matchstart++) {
 
         thismaxmatchamount = maxmatchamount;
         if (thismaxmatchamount > offset - matchstart)
@@ -254,6 +254,9 @@ static PyObject *nsmblib_compress11LZS(PyObject *self, PyObject *args) {
     u8 *buffer;
     int bufSize;
 
+    int i;
+    int ret1, ret2;
+
     PyObject *retvalue;
 
     /* get the arguments */
@@ -301,9 +304,8 @@ static PyObject *nsmblib_compress11LZS(PyObject *self, PyObject *args) {
         u8 *flagpos = dest_ptr;
         *dest_ptr++ = flag;
 
-        for (int i = 7; i >= 0; i--) {
+        for (i = 7; i >= 0; i--) {
 
-            int ret1, ret2;
             LZSearch(data, src_ptr - data, datalength, &ret1, &ret2);
 
             if (ret2 > 0) { /* there is a compression match */
