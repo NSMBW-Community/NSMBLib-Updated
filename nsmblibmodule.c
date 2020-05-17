@@ -184,26 +184,34 @@ static PyObject *nsmblib_decompress11LZS(PyObject *self, PyObject *args) {
 
 
 void LZSearch(u8 *data, int offset, int length, int *ret1, int *ret2) {
-    int windowsize = 0x1000, maxmatchamount = 0xFFFF + 273;
+    int windowsize, maxmatchamount;
+    int start;
+    int recordoffset, recordlen;
+
+    windowsize = 0x1000;
+    maxmatchamount = 0xFFFF + 273;
 
     if (windowsize > offset)
         windowsize = offset;
 
-    int start = offset - windowsize;
+    start = offset - windowsize;
 
     if (windowsize < maxmatchamount)
         maxmatchamount = windowsize;
     if ((length - offset) < maxmatchamount)
         maxmatchamount = length - offset;
 
-    int recordoffset = -1, recordlen = 3;
+    recordoffset = -1;
+    recordlen = 3;
     for (int matchstart = start; matchstart < offset; matchstart++) {
-        int thismaxmatchamount = maxmatchamount;
+        int thismaxmatchamount, matchlen;
+
+        thismaxmatchamount = maxmatchamount;
         if (thismaxmatchamount > offset - matchstart)
             thismaxmatchamount = offset - matchstart;
 
         /* find length of match at this location */
-        int matchlen = 0;
+        matchlen = 0;
         while ((matchlen < thismaxmatchamount) && (data[matchstart + matchlen] == data[offset + matchlen]))
             matchlen++;
 
