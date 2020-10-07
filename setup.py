@@ -11,7 +11,7 @@ if sys.version_info[0] > 2 and os.name != 'nt':
 
 setup(
   name='nsmblib',
-  version='2020.05.17.0',
+  version='2020.10.07.0',
   ext_modules=[
     Extension(
       'nsmblib',
