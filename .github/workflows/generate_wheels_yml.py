@@ -91,10 +91,10 @@ for pyver in ['35', '36', '37', '38', '39']:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python ${{{{ matrix.python-version }}}}
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: ${{{{ matrix.python-version }}}}
     - name: Install dependencies
       run: |
         {pycommand} -m pip install --upgrade pip
