@@ -18,7 +18,7 @@ yml.append("""
 
     strategy:
       matrix:
-        python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
+        python-version: [2.7, 3.5, 3.6, 3.7, 3.8, 3.9]
         platform: [macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
 
@@ -75,11 +75,11 @@ yml.append("""
 """)
 
 # manylinuxes for 3.x
-for pyver in ['35', '36', '37', '38']:
+for pyver in ['35', '36', '37', '38', '39']:
     # There seems to be no way (as of 2020-02-13) to accomplish this in the YAML
     # (unlike in Azure Pipelines)
-    if pyver == '38':
-        pycommand = '/opt/python/cp38-cp38/bin/python'
+    if pyver in ['38', '39']:
+        pycommand = f'/opt/python/cp{pyver}-cp{pyver}/bin/python'
     else:
         pycommand = f'/opt/python/cp{pyver}-cp{pyver}m/bin/python'
 

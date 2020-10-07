@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
+        python-version: [2.7, 3.5, 3.6, 3.7, 3.8, 3.9]
         platform: [macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
 
@@ -170,4 +170,31 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: build-manylinux-38
+        path: dist
+
+  manylinux-39:
+
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        /opt/python/cp39-cp39/bin/python -m pip install --upgrade pip
+        /opt/python/cp39-cp39/bin/python -m pip install --upgrade setuptools wheel auditwheel
+    - name: Build
+      run: |
+        /opt/python/cp39-cp39/bin/python setup.py bdist_wheel
+    - name: Run auditwheel
+      run: |
+        mkdir dist/wheelhouse
+        /opt/python/cp39-cp39/bin/python -m auditwheel repair -w dist/wheelhouse/ dist/*.whl
+        rm dist/*.whl
+        mv dist/wheelhouse/* dist/
+        rm -rf dist/wheelhouse
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-manylinux-39
         path: dist
