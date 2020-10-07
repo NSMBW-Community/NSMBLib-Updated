@@ -26,7 +26,7 @@ yml.append("""
     - uses: actions/checkout@v2
     - uses: ilammy/msvc-dev-cmd@v1
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install Microsoft Visual C++ Compiler for Python 2.7
@@ -91,6 +91,10 @@ for pyver in ['35', '36', '37', '38', '39']:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
         {pycommand} -m pip install --upgrade pip
