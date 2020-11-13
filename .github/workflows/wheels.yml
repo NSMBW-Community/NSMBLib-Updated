@@ -35,6 +35,11 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
+    - name: Install Microsoft Visual C++ Compiler for Python 2.7
+      if: (matrix.python-version == '2.7')
+      uses: crazy-max/ghaction-chocolatey@v1
+      with:
+        args: install vcpython27
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip

@@ -93,6 +93,13 @@ def make_build_job(platform: str, pyver: tuple) -> str:
       with:
         python-version: {pyver_str_dot}
     ''')}
+    {only_on('windows', f'''
+    - name: Install Microsoft Visual C++ Compiler for Python 2.7
+      if: (matrix.python-version == '2.7')
+      uses: crazy-max/ghaction-chocolatey@v1
+      with:
+        args: install vcpython27
+    ''')}
     - name: Install dependencies
       run: |
         {py_cmd} -m pip install --upgrade pip
