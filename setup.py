@@ -19,7 +19,7 @@ setup(
     Extension(
       'nsmblib',
       sources=['nsmblibmodule.c', 'list.c'],
-      extra_compile_args=['-std=c95'],
+      extra_compile_args=['-Wno-implicit-function-declaration'],
       py_limited_api=True,
     )
   ]
