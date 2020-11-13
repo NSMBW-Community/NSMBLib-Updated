@@ -19,6 +19,7 @@ setup(
     Extension(
       'nsmblib',
       sources=['nsmblibmodule.c', 'list.c'],
+      extra_compile_args=['-std=c89'],
       py_limited_api=True,
     )
   ]
