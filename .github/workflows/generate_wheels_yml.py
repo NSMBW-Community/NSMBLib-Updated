@@ -1,8 +1,8 @@
 # Script for auto-generating wheels.yml.
 
 PLATFORMS = ['windows', 'macos', 'ubuntu']
-CPYTHON_TEST_VERSIONS = [(3,5), (3,6), (3,7), (3,8), (3,9)]
-CPYTHON_BUILD_VERSION = CPYTHON_TEST_VERSIONS[-1]
+CPYTHON_SUPPORT_VERSIONS = [(3,5), (3,6), (3,7), (3,8), (3,9)]
+CPYTHON_BUILD_VERSION = CPYTHON_SUPPORT_VERSIONS[-1]
 MANYLINUX_CONTAINER = 'quay.io/pypa/manylinux2014_x86_64'
 
 
@@ -56,9 +56,7 @@ def make_sdist_job(pyver: tuple) -> str:
     - name: Build
       shell: bash
       run: |
-        cd bindings
         {py_cmd} setup.py sdist
-        mv ./dist ../dist
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
@@ -79,7 +77,7 @@ def make_build_job(platform: str, pyver: tuple) -> str:
     def only_on_not(platform_2, text):
         return text if (platform != platform_2) else ''
 
-    interpreter_tags = ' '.join(f'cp{a}{b}' for a, b in CPYTHON_TEST_VERSIONS)
+    interpreter_tags = ' '.join(f'cp{a}{b}' for a, b in CPYTHON_SUPPORT_VERSIONS)
 
     return f"""
   build-{platform}:
@@ -102,9 +100,7 @@ def make_build_job(platform: str, pyver: tuple) -> str:
     - name: Build
       shell: bash
       run: |
-        cd bindings
         {py_cmd} setup.py bdist_wheel
-        mv ./dist ../dist
     {only_on('ubuntu', f'''
     - name: Run auditwheel
       run: |
@@ -127,80 +123,19 @@ def make_build_job(platform: str, pyver: tuple) -> str:
     """
 
 
-def make_test_job(platform: str, pyver: tuple) -> str:
-    """
-    Make a test job for the specified platform and Python version
-    (tests both the built wheel and the sdist)
-    """
-    pyver_str_dot, pyver_str_none, py_cmd = strings_for(platform, pyver)
-
-    def only_on(platform_2, text):
-        return text if (platform == platform_2) else ''
-
-    def only_on_not(platform_2, text):
-        return text if (platform != platform_2) else ''
-
-    return f"""
-  test-{platform}-{pyver_str_none}:
-
-    needs: [build-{platform}, sdist]
-    runs-on: {platform}-latest
-    {only_on('ubuntu', f'container: {MANYLINUX_CONTAINER}')}
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python {pyver_str_dot}
-      uses: actions/setup-python@v2
-      with:
-        python-version: {pyver_str_dot}
-    - name: Download build artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: build-{platform}
-    - name: Download sdist artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: sdist
-    - name: Install dependencies
-      run: |
-        {py_cmd} -m pip install --upgrade pip
-        {py_cmd} -m pip install pytest
-    - name: Install wheel
-      shell: bash
-      run: |
-        {py_cmd} -m pip install *.whl
-    - name: Test wheel with pytest
-      run: |
-        cd tests
-        {py_cmd} -m pytest
-    - name: Uninstall wheel and install sdist
-      shell: bash
-      run: |
-        {py_cmd} -m pip uninstall -y nsmblib
-        {py_cmd} -m pip install *.tar.gz
-    - name: Test sdist with pytest
-      run: |
-        cd tests
-        {py_cmd} -m pytest
-    """
-
-
 # YAML header
 yml = ["""
-name: Build and test
+name: Build
 on: [push]
 
 jobs:
 """]
 
 
-# Make one build per platform (abi3),
-# and perform one test per platform / Python version combo
+# Make one build per platform (abi3)
 yml.append(make_sdist_job(CPYTHON_BUILD_VERSION))
 for platform in PLATFORMS:
     yml.append(make_build_job(platform, CPYTHON_BUILD_VERSION))
-    for pyver in CPYTHON_TEST_VERSIONS:
-        yml.append(make_test_job(platform, pyver))
 
 
 # Write the output file
