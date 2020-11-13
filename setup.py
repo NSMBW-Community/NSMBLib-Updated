@@ -7,7 +7,10 @@ from setuptools import setup, Extension
 if sys.version_info[0] > 2 and os.name != 'nt':
     # Declare support for all Python versions newer than the current one
     pyver = 'cp' + str(sys.version_info[0]) + str(sys.version_info[1])
-    sys.argv.extend(['--py-limited-api', pyver])
+
+    # Bad heuristic, but good enough, I guess?
+    if any('bdist' in arg for arg in sys.argv[1:]):
+        sys.argv.extend(['--py-limited-api', pyver])
 
 setup(
   name='nsmblib',

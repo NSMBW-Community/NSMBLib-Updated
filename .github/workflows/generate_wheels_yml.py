@@ -52,7 +52,7 @@ def make_sdist_job(pyver: tuple) -> str:
     - name: Install dependencies
       run: |
         {py_cmd} -m pip install --upgrade pip
-        {py_cmd} -m pip install --upgrade setuptools cffi>=1.0.0
+        {py_cmd} -m pip install --upgrade setuptools
     - name: Build
       shell: bash
       run: |
@@ -93,17 +93,10 @@ def make_build_job(platform: str, pyver: tuple) -> str:
       with:
         python-version: {pyver_str_dot}
     ''')}
-    {only_on('windows', f'''
-    - name: Install Microsoft Visual C++ Compiler for Python 2.7
-      if: (matrix.python-version == '2.7')
-      uses: crazy-max/ghaction-chocolatey@v1
-      with:
-        args: install vcpython27
-    ''')}
     - name: Install dependencies
       run: |
         {py_cmd} -m pip install --upgrade pip
-        {py_cmd} -m pip install --upgrade setuptools wheel packaging cffi>=1.0.0 {only_on('ubuntu', 'auditwheel')}
+        {py_cmd} -m pip install --upgrade setuptools wheel packaging {only_on('ubuntu', 'auditwheel')}
     - name: Build
       shell: bash
       run: |

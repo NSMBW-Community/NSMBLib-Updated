@@ -17,7 +17,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install --upgrade setuptools cffi>=1.0.0
+        python -m pip install --upgrade setuptools
     - name: Build
       shell: bash
       run: |
@@ -35,15 +35,10 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
-    - name: Install Microsoft Visual C++ Compiler for Python 2.7
-      if: (matrix.python-version == '2.7')
-      uses: crazy-max/ghaction-chocolatey@v1
-      with:
-        args: install vcpython27
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install --upgrade setuptools wheel packaging cffi>=1.0.0
+        python -m pip install --upgrade setuptools wheel packaging
     - name: Build
       shell: bash
       run: |
@@ -69,7 +64,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install --upgrade setuptools wheel packaging cffi>=1.0.0
+        python -m pip install --upgrade setuptools wheel packaging
     - name: Build
       shell: bash
       run: |
@@ -92,7 +87,7 @@ jobs:
     - name: Install dependencies
       run: |
         /opt/python/cp39-cp39/bin/python -m pip install --upgrade pip
-        /opt/python/cp39-cp39/bin/python -m pip install --upgrade setuptools wheel packaging cffi>=1.0.0 auditwheel
+        /opt/python/cp39-cp39/bin/python -m pip install --upgrade setuptools wheel packaging auditwheel
     - name: Build
       shell: bash
       run: |
