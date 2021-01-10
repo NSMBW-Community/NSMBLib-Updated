@@ -709,10 +709,10 @@ jobs:
     - name: Run auditwheel
       run: |
         mkdir dist/wheelhouse
-        /opt/python/cp39-cp39/bin/python -m auditwheel repair --plat manylinux2014_x86_64 -w dist/wheelhouse/ dist/*.whl
+        /opt/python/cp39-cp39/bin/python -m auditwheel repair -w dist/wheelhouse/ dist/*.whl
         rm dist/*.whl
         mv dist/wheelhouse/* dist/
-        ls dist/
+        rm dist/*manylinux1*
         rm -rf dist/wheelhouse
     - name: Rename wheel file
       shell: bash
