@@ -27,7 +27,6 @@ setup(
       'nsmblib',
       sources=['nsmblibmodule.c', 'list.c'],
       extra_compile_args=extra_compile_args,
-      py_limited_api=True,
     )
   ]
 )
