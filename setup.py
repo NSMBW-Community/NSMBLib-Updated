@@ -13,10 +13,7 @@ if sys.version_info[0] > 2:
         sys.argv.extend(['--py-limited-api', pyver])
 
 # Workaround for what looks like a weird Python bug?
-if os.name == 'nt':
-    extra_compile_args = []
-else:
-    extra_compile_args = ['-Wno-implicit-function-declaration']
+extra_compile_args = []
 extra_compile_args += ['-DPy_LIMITED_ABI', '-DPy_LIMITED_API']
 
 setup(
@@ -27,6 +24,7 @@ setup(
       'nsmblib',
       sources=['nsmblibmodule.c', 'list.c'],
       extra_compile_args=extra_compile_args,
+      py_limited_api=True,
     )
   ]
 )
