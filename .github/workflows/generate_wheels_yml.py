@@ -86,6 +86,11 @@ def make_build_job(platform: str, arch: int, pyver: tuple) -> str:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 2.7
+        architecture: {'x64' if arch == 64 else 'x86'}
     - name: Install dependencies
       run: |
         {py_cmd} -m pip install --upgrade pip
