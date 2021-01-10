@@ -11,7 +11,7 @@ if os.name != 'nt':
 
 setup(
   name='nsmblib',
-  version='2020.10.07.0',
+  version='2021.01.10.0',
   ext_modules=[
     Extension(
       'nsmblib',
