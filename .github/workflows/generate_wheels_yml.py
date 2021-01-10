@@ -1,8 +1,9 @@
 # Script for auto-generating wheels.yml.
 
 PLATFORMS = ['windows', 'macos', 'ubuntu']
-CPYTHON_TEST_VERSIONS = [(3,5), (3,6), (3,7), (3,8), (3,9)]
-CPYTHON_BUILD_VERSION = CPYTHON_TEST_VERSIONS[-1]
+CPYTHON_TEST_VERSIONS = [(2,7), (3,5), (3,6), (3,7), (3,8), (3,9)]
+CPYTHON_2_BUILD_VERSION = (2,7)
+CPYTHON_3_BUILD_VERSION = CPYTHON_TEST_VERSIONS[-1]
 MANYLINUX_CONTAINER = 'quay.io/pypa/manylinux2014_x86_64'
 
 
@@ -21,8 +22,10 @@ def strings_for(platform: str, pyver: tuple) -> (str, str, str):
         # <3.8 have to be in the form "cpXY-cpXYm"; >=3.8 have to be in the form "cpXY-cpXY"
         if pyver >= (3,8):
             py_cmd = f'/opt/python/cp{pyver_str_none}-cp{pyver_str_none}/bin/python'
-        else:
+        elif pyver >= (3,0):
             py_cmd = f'/opt/python/cp{pyver_str_none}-cp{pyver_str_none}m/bin/python'
+        else:
+            py_cmd = 'python'
     else:
         py_cmd = 'python'
 
@@ -77,10 +80,63 @@ def make_build_job(platform: str, arch: int, pyver: tuple) -> str:
     def only_on_not(platform_2, text):
         return text if (platform != platform_2) else ''
 
-    interpreter_tags = ' '.join(f'cp{a}{b}' for a, b in CPYTHON_TEST_VERSIONS)
+    if pyver[0] == 2 and platform == 'ubuntu':
+        return f"""
+  build-ubuntu-{arch}-27:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        {py_cmd} -m pip install --upgrade pip
+        {py_cmd} -m pip install --upgrade setuptools wheel
+    - name: Build
+      run: |
+        {py_cmd} setup.py bdist_wheel
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-ubuntu-{arch}-27
+        path: dist
+        """
 
-    return f"""
-  build-{platform}-{arch}:
+    elif pyver[0] == 2:
+        return f"""
+  build-{platform}-{arch}-27:
+    runs-on: {platform}-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ilammy/msvc-dev-cmd@v1
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 2.7
+        architecture: {'x64' if arch == 64 else 'x86'}
+    {only_on('windows', f'''
+    - name: Install Microsoft Visual C++ Compiler for Python 2.7
+      uses: crazy-max/ghaction-chocolatey@v1
+      with:
+        args: install vcpython27
+    ''')}
+    - name: Install dependencies
+      run: |
+        {py_cmd} -m pip install --upgrade pip
+        {py_cmd} -m pip install --upgrade setuptools wheel
+    - name: Build
+      run: |
+        {py_cmd} setup.py bdist_wheel
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-{platform}-{arch}-27
+        path: dist
+        """
+
+    else:
+        interpreter_tags = ' '.join(f'cp{a}{b}' for a, b in CPYTHON_TEST_VERSIONS if a > 2)
+
+        return f"""
+  build-{platform}-{arch}-abi3:
 
     runs-on: {platform}-latest
     {only_on('ubuntu', f'container: {MANYLINUX_CONTAINER}')}
@@ -120,9 +176,9 @@ def make_build_job(platform: str, arch: int, pyver: tuple) -> str:
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: build-{platform}-{arch}
+        name: build-{platform}-{arch}-abi3
         path: dist
-    """
+        """
 
 
 def make_test_job(platform: str, arch: int, pyver: tuple) -> str:
@@ -138,10 +194,12 @@ def make_test_job(platform: str, arch: int, pyver: tuple) -> str:
     def only_on_not(platform_2, text):
         return text if (platform != platform_2) else ''
 
+    package_type = '27' if pyver[0] == 2 else 'abi3'
+
     return f"""
   test-{platform}-{arch}-{pyver_str_none}:
 
-    needs: [build-{platform}-{arch}, sdist]
+    needs: [build-{platform}-{arch}-{package_type}, sdist]
     runs-on: {platform}-latest
     {only_on('ubuntu', f'container: {MANYLINUX_CONTAINER}')}
 
@@ -157,7 +215,7 @@ def make_test_job(platform: str, arch: int, pyver: tuple) -> str:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-{platform}-{arch}
+        name: build-{platform}-{arch}-{package_type}
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -197,13 +255,14 @@ jobs:
 
 # Make one build per platform (abi3),
 # and perform one test per platform / Python version combo
-yml.append(make_sdist_job(CPYTHON_BUILD_VERSION))
+yml.append(make_sdist_job(CPYTHON_3_BUILD_VERSION))
 for arch in [32, 64]:
     for platform in PLATFORMS:
         if arch == 32 and platform != 'windows':
             # GHA actions/setup-python only provides 32-bit Python builds for Windows
             continue
-        yml.append(make_build_job(platform, arch, CPYTHON_BUILD_VERSION))
+        yml.append(make_build_job(platform, arch, CPYTHON_2_BUILD_VERSION))
+        yml.append(make_build_job(platform, arch, CPYTHON_3_BUILD_VERSION))
         for pyver in CPYTHON_TEST_VERSIONS:
             yml.append(make_test_job(platform, arch, pyver))
 

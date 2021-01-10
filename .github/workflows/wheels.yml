@@ -27,7 +27,33 @@ jobs:
       with:
         name: sdist
         path: dist
-  build-windows-32:
+  build-windows-32-27:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ilammy/msvc-dev-cmd@v1
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 2.7
+        architecture: x86
+    - name: Install Microsoft Visual C++ Compiler for Python 2.7
+      uses: crazy-max/ghaction-chocolatey@v1
+      with:
+        args: install vcpython27
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install --upgrade setuptools wheel
+    - name: Build
+      run: |
+        python setup.py bdist_wheel
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-windows-32-27
+        path: dist
+  build-windows-32-abi3:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -52,10 +78,49 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: build-windows-32
+        name: build-windows-32-abi3
         path: dist
+  test-windows-32-27:
+    needs: [build-windows-32-27, sdist]
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 2.7
+        architecture: x86
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-windows-32-27
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
   test-windows-32-35:
-    needs: [build-windows-32, sdist]
+    needs: [build-windows-32-abi3, sdist]
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -67,7 +132,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-windows-32
+        name: build-windows-32-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -94,7 +159,7 @@ jobs:
         cd tests
         python -m pytest
   test-windows-32-36:
-    needs: [build-windows-32, sdist]
+    needs: [build-windows-32-abi3, sdist]
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -106,7 +171,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-windows-32
+        name: build-windows-32-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -133,7 +198,7 @@ jobs:
         cd tests
         python -m pytest
   test-windows-32-37:
-    needs: [build-windows-32, sdist]
+    needs: [build-windows-32-abi3, sdist]
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -145,7 +210,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-windows-32
+        name: build-windows-32-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -172,7 +237,7 @@ jobs:
         cd tests
         python -m pytest
   test-windows-32-38:
-    needs: [build-windows-32, sdist]
+    needs: [build-windows-32-abi3, sdist]
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -184,7 +249,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-windows-32
+        name: build-windows-32-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -211,7 +276,7 @@ jobs:
         cd tests
         python -m pytest
   test-windows-32-39:
-    needs: [build-windows-32, sdist]
+    needs: [build-windows-32-abi3, sdist]
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -223,7 +288,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-windows-32
+        name: build-windows-32-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -249,7 +314,33 @@ jobs:
       run: |
         cd tests
         python -m pytest
-  build-windows-64:
+  build-windows-64-27:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ilammy/msvc-dev-cmd@v1
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 2.7
+        architecture: x64
+    - name: Install Microsoft Visual C++ Compiler for Python 2.7
+      uses: crazy-max/ghaction-chocolatey@v1
+      with:
+        args: install vcpython27
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install --upgrade setuptools wheel
+    - name: Build
+      run: |
+        python setup.py bdist_wheel
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-windows-64-27
+        path: dist
+  build-windows-64-abi3:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -274,10 +365,49 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: build-windows-64
+        name: build-windows-64-abi3
         path: dist
+  test-windows-64-27:
+    needs: [build-windows-64-27, sdist]
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 2.7
+        architecture: x64
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-windows-64-27
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
   test-windows-64-35:
-    needs: [build-windows-64, sdist]
+    needs: [build-windows-64-abi3, sdist]
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -289,7 +419,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-windows-64
+        name: build-windows-64-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -316,7 +446,7 @@ jobs:
         cd tests
         python -m pytest
   test-windows-64-36:
-    needs: [build-windows-64, sdist]
+    needs: [build-windows-64-abi3, sdist]
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -328,7 +458,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-windows-64
+        name: build-windows-64-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -355,7 +485,7 @@ jobs:
         cd tests
         python -m pytest
   test-windows-64-37:
-    needs: [build-windows-64, sdist]
+    needs: [build-windows-64-abi3, sdist]
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -367,7 +497,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-windows-64
+        name: build-windows-64-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -394,7 +524,7 @@ jobs:
         cd tests
         python -m pytest
   test-windows-64-38:
-    needs: [build-windows-64, sdist]
+    needs: [build-windows-64-abi3, sdist]
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -406,7 +536,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-windows-64
+        name: build-windows-64-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -433,7 +563,7 @@ jobs:
         cd tests
         python -m pytest
   test-windows-64-39:
-    needs: [build-windows-64, sdist]
+    needs: [build-windows-64-abi3, sdist]
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -445,7 +575,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-windows-64
+        name: build-windows-64-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -471,7 +601,29 @@ jobs:
       run: |
         cd tests
         python -m pytest
-  build-macos-64:
+  build-macos-64-27:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ilammy/msvc-dev-cmd@v1
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 2.7
+        architecture: x64
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install --upgrade setuptools wheel
+    - name: Build
+      run: |
+        python setup.py bdist_wheel
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-macos-64-27
+        path: dist
+  build-macos-64-abi3:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
@@ -496,10 +648,49 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: build-macos-64
+        name: build-macos-64-abi3
         path: dist
+  test-macos-64-27:
+    needs: [build-macos-64-27, sdist]
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 2.7
+        architecture: x64
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-macos-64-27
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
   test-macos-64-35:
-    needs: [build-macos-64, sdist]
+    needs: [build-macos-64-abi3, sdist]
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
@@ -511,7 +702,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-macos-64
+        name: build-macos-64-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -538,7 +729,7 @@ jobs:
         cd tests
         python -m pytest
   test-macos-64-36:
-    needs: [build-macos-64, sdist]
+    needs: [build-macos-64-abi3, sdist]
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
@@ -550,7 +741,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-macos-64
+        name: build-macos-64-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -577,7 +768,7 @@ jobs:
         cd tests
         python -m pytest
   test-macos-64-37:
-    needs: [build-macos-64, sdist]
+    needs: [build-macos-64-abi3, sdist]
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
@@ -589,7 +780,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-macos-64
+        name: build-macos-64-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -616,7 +807,7 @@ jobs:
         cd tests
         python -m pytest
   test-macos-64-38:
-    needs: [build-macos-64, sdist]
+    needs: [build-macos-64-abi3, sdist]
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
@@ -628,7 +819,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-macos-64
+        name: build-macos-64-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -655,7 +846,7 @@ jobs:
         cd tests
         python -m pytest
   test-macos-64-39:
-    needs: [build-macos-64, sdist]
+    needs: [build-macos-64-abi3, sdist]
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
@@ -667,7 +858,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-macos-64
+        name: build-macos-64-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -693,7 +884,23 @@ jobs:
       run: |
         cd tests
         python -m pytest
-  build-ubuntu-64:
+  build-ubuntu-64-27:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install --upgrade setuptools wheel
+    - name: Build
+      run: |
+        python setup.py bdist_wheel
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-ubuntu-64-27
+        path: dist
+  build-ubuntu-64-abi3:
     runs-on: ubuntu-latest
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
@@ -722,10 +929,10 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: build-ubuntu-64
+        name: build-ubuntu-64-abi3
         path: dist
-  test-ubuntu-64-35:
-    needs: [build-ubuntu-64, sdist]
+  test-ubuntu-64-27:
+    needs: [build-ubuntu-64-27, sdist]
     runs-on: ubuntu-latest
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
@@ -733,7 +940,42 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-ubuntu-64
+        name: build-ubuntu-64-27
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  test-ubuntu-64-35:
+    needs: [build-ubuntu-64-abi3, sdist]
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-ubuntu-64-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -760,7 +1002,7 @@ jobs:
         cd tests
         /opt/python/cp35-cp35m/bin/python -m pytest
   test-ubuntu-64-36:
-    needs: [build-ubuntu-64, sdist]
+    needs: [build-ubuntu-64-abi3, sdist]
     runs-on: ubuntu-latest
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
@@ -768,7 +1010,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-ubuntu-64
+        name: build-ubuntu-64-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -795,7 +1037,7 @@ jobs:
         cd tests
         /opt/python/cp36-cp36m/bin/python -m pytest
   test-ubuntu-64-37:
-    needs: [build-ubuntu-64, sdist]
+    needs: [build-ubuntu-64-abi3, sdist]
     runs-on: ubuntu-latest
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
@@ -803,7 +1045,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-ubuntu-64
+        name: build-ubuntu-64-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -830,7 +1072,7 @@ jobs:
         cd tests
         /opt/python/cp37-cp37m/bin/python -m pytest
   test-ubuntu-64-38:
-    needs: [build-ubuntu-64, sdist]
+    needs: [build-ubuntu-64-abi3, sdist]
     runs-on: ubuntu-latest
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
@@ -838,7 +1080,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-ubuntu-64
+        name: build-ubuntu-64-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -865,7 +1107,7 @@ jobs:
         cd tests
         /opt/python/cp38-cp38/bin/python -m pytest
   test-ubuntu-64-39:
-    needs: [build-ubuntu-64, sdist]
+    needs: [build-ubuntu-64-abi3, sdist]
     runs-on: ubuntu-latest
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
@@ -873,7 +1115,7 @@ jobs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-ubuntu-64
+        name: build-ubuntu-64-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
