@@ -3,11 +3,11 @@ import sys
 
 from setuptools import setup, Extension
 
-# Building with limited API only works on 3.x, and on non-Windows OSes
-if sys.version_info[0] > 2 and os.name != 'nt':
-    # Declare support for all Python versions newer than the current one
-    pyver = 'cp' + str(sys.version_info[0]) + str(sys.version_info[1])
-    sys.argv.extend(['--py-limited-api', pyver])
+extra_compile_args = ['-DPy_LIMITED_API']
+
+# Workaround for what looks like a weird Python bug?
+if os.name != 'nt':
+    extra_compile_args.append('-Wno-implicit-function-declaration')
 
 setup(
   name='nsmblib',
@@ -16,6 +16,7 @@ setup(
     Extension(
       'nsmblib',
       sources=['nsmblibmodule.c', 'list.c'],
+      extra_compile_args=extra_compile_args,
       py_limited_api=True,
     )
   ]
