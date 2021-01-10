@@ -85,11 +85,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 2.7
-      uses: actions/setup-python@v2
-      with:
-        python-version: 2.7
-        architecture: x86
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -110,11 +105,16 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install Microsoft Visual C++ Compiler for Python 2.7
+      uses: crazy-max/ghaction-chocolatey@v1
+      with:
+        args: install vcpython27
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -124,11 +124,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.5
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.5
-        architecture: x86
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -149,11 +144,12 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -163,11 +159,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.6
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.6
-        architecture: x86
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -188,11 +179,12 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -202,11 +194,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
-        architecture: x86
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -227,11 +214,12 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -241,11 +229,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-        architecture: x86
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -266,11 +249,12 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -280,11 +264,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-        architecture: x86
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -305,11 +284,12 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -372,11 +352,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 2.7
-      uses: actions/setup-python@v2
-      with:
-        python-version: 2.7
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -397,11 +372,16 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install Microsoft Visual C++ Compiler for Python 2.7
+      uses: crazy-max/ghaction-chocolatey@v1
+      with:
+        args: install vcpython27
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -411,11 +391,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.5
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.5
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -436,11 +411,12 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -450,11 +426,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.6
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.6
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -475,11 +446,12 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -489,11 +461,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -514,11 +481,12 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -528,11 +496,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -553,11 +516,12 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -567,11 +531,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -592,11 +551,12 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -655,11 +615,6 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 2.7
-      uses: actions/setup-python@v2
-      with:
-        python-version: 2.7
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -680,11 +635,12 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -694,11 +650,6 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.5
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.5
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -719,11 +670,12 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -733,11 +685,6 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.6
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.6
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -758,11 +705,12 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -772,11 +720,6 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -797,11 +740,12 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -811,11 +755,6 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -836,11 +775,12 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -850,11 +790,6 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -875,11 +810,12 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -939,14 +875,8 @@ jobs:
   test-ubuntu-64-27:
     needs: [build-ubuntu-64-27, sdist]
     runs-on: ubuntu-latest
-    container: quay.io/pypa/manylinux2014_x86_64
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 2.7
-      uses: actions/setup-python@v2
-      with:
-        python-version: 2.7
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -967,11 +897,12 @@ jobs:
       run: |
         cd tests
         python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        python -m pip uninstall -y nsmblib
-        python -m pip install *.tar.gz
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -982,6 +913,11 @@ jobs:
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.5
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.5
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -1002,11 +938,12 @@ jobs:
       run: |
         cd tests
         /opt/python/cp35-cp35m/bin/python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        /opt/python/cp35-cp35m/bin/python -m pip uninstall -y nsmblib
-        /opt/python/cp35-cp35m/bin/python -m pip install *.tar.gz
+      run: /opt/python/cp35-cp35m/bin/python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: /opt/python/cp35-cp35m/bin/python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -1017,6 +954,11 @@ jobs:
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -1037,11 +979,12 @@ jobs:
       run: |
         cd tests
         /opt/python/cp36-cp36m/bin/python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        /opt/python/cp36-cp36m/bin/python -m pip uninstall -y nsmblib
-        /opt/python/cp36-cp36m/bin/python -m pip install *.tar.gz
+      run: /opt/python/cp36-cp36m/bin/python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: /opt/python/cp36-cp36m/bin/python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -1052,6 +995,11 @@ jobs:
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -1072,11 +1020,12 @@ jobs:
       run: |
         cd tests
         /opt/python/cp37-cp37m/bin/python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        /opt/python/cp37-cp37m/bin/python -m pip uninstall -y nsmblib
-        /opt/python/cp37-cp37m/bin/python -m pip install *.tar.gz
+      run: /opt/python/cp37-cp37m/bin/python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: /opt/python/cp37-cp37m/bin/python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -1087,6 +1036,11 @@ jobs:
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -1107,11 +1061,12 @@ jobs:
       run: |
         cd tests
         /opt/python/cp38-cp38/bin/python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        /opt/python/cp38-cp38/bin/python -m pip uninstall -y nsmblib
-        /opt/python/cp38-cp38/bin/python -m pip install *.tar.gz
+      run: /opt/python/cp38-cp38/bin/python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: /opt/python/cp38-cp38/bin/python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
@@ -1122,6 +1077,11 @@ jobs:
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -1142,11 +1102,12 @@ jobs:
       run: |
         cd tests
         /opt/python/cp39-cp39/bin/python -m pytest
-    - name: Uninstall wheel and install sdist
+    - name: Uninstall wheel
       shell: bash
-      run: |
-        /opt/python/cp39-cp39/bin/python -m pip uninstall -y nsmblib
-        /opt/python/cp39-cp39/bin/python -m pip install *.tar.gz
+      run: /opt/python/cp39-cp39/bin/python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: /opt/python/cp39-cp39/bin/python -m pip install *.tar.gz
     - name: Test sdist with pytest
       run: |
         cd tests
