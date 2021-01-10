@@ -85,6 +85,11 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 2.7
+        architecture: x86
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -119,6 +124,11 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.5
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.5
+        architecture: x86
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -153,6 +163,11 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+        architecture: x86
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -187,6 +202,11 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+        architecture: x86
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -221,6 +241,11 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+        architecture: x86
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -255,6 +280,11 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+        architecture: x86
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -342,6 +372,11 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 2.7
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -376,6 +411,11 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.5
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.5
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -410,6 +450,11 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -444,6 +489,11 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -478,6 +528,11 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -512,6 +567,11 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -595,6 +655,11 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 2.7
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -629,6 +694,11 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.5
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.5
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -663,6 +733,11 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -697,6 +772,11 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -731,6 +811,11 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -765,6 +850,11 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -847,6 +937,11 @@ jobs:
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 2.7
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -882,11 +977,6 @@ jobs:
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.5
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.5
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -922,11 +1012,6 @@ jobs:
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.6
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.6
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -962,11 +1047,6 @@ jobs:
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -1002,11 +1082,6 @@ jobs:
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -1042,11 +1117,6 @@ jobs:
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:

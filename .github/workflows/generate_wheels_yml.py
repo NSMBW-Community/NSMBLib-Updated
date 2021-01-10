@@ -205,7 +205,7 @@ def make_test_job(platform: str, arch: int, pyver: tuple) -> str:
 
     steps:
     - uses: actions/checkout@v2
-    {'' if (platform, pyver[0]) != ('ubuntu', 3) else f'''
+    {'' if (platform, pyver[0]) == ('ubuntu', 3) else f'''
     - name: Set up Python {pyver_str_dot}
       uses: actions/setup-python@v2
       with:
