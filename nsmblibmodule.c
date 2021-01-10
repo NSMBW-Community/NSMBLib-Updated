@@ -1,4 +1,4 @@
-#define Py_LIMITED_API
+#define Py_LIMITED_ABI
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include "bytesobject.h"
