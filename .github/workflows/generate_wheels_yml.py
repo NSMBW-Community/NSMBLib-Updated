@@ -109,6 +109,7 @@ def make_build_job(platform: str, arch: int, pyver: tuple) -> str:
         {py_cmd} -m auditwheel repair --plat manylinux2014_x86_64 -w dist/wheelhouse/ dist/*.whl
         rm dist/*.whl
         mv dist/wheelhouse/* dist/
+        ls dist/
         rm -rf dist/wheelhouse
     ''')}
     - name: Rename wheel file
