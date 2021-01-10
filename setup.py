@@ -4,7 +4,7 @@ import sys
 from setuptools import setup, Extension
 
 # Building with limited API only works on 3.x, and on non-Windows OSes
-if sys.version_info[0] > 2 and os.name != 'nt':
+if sys.version_info[0] > 2:
     # Declare support for all Python versions newer than the current one
     pyver = 'cp' + str(sys.version_info[0]) + str(sys.version_info[1])
 
@@ -21,7 +21,6 @@ else:
 setup(
   name='nsmblib',
   version='2020.10.07.0',
-  py_modules=['lz77'],
   ext_modules=[
     Extension(
       'nsmblib',
