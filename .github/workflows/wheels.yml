@@ -85,6 +85,11 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 2.7
+        architecture: x86
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -377,6 +382,11 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 2.7
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -665,6 +675,11 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 2.7
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -952,6 +967,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 2.7
+        architecture: x64
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:

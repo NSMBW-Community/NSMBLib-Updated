@@ -80,7 +80,7 @@ def make_build_job(platform: str, arch: int, pyver: tuple) -> str:
     def only_on_not(platform_2, text, additional_condition=True):
         return text if (platform != platform_2 and additional_condition) else ''
 
-    if pyver[0] == 2 and platform == 'ubuntu':
+    if pyver < (3,0) and platform == 'ubuntu':
         return f"""
   build-ubuntu-{arch}-27:
     runs-on: ubuntu-latest
@@ -105,7 +105,7 @@ def make_build_job(platform: str, arch: int, pyver: tuple) -> str:
         path: dist
         """
 
-    elif pyver[0] == 2:
+    elif pyver < (3,0):
         return f"""
   build-{platform}-{arch}-27:
     runs-on: {platform}-latest
@@ -193,30 +193,33 @@ def make_test_job(platform: str, arch: int, pyver: tuple) -> str:
     """
     pyver_str_dot, pyver_str_none, py_cmd = strings_for(platform, pyver)
 
-    def only_on(platform_2, text, additional_condition=True):
-        return text if (platform == platform_2 and additional_condition) else ''
+    def only_if(condition, text):
+        return text if condition else ''
 
-    def only_on_not(platform_2, text, additional_condition=True):
-        return text if (platform != platform_2 and additional_condition) else ''
+    def only_on(platform_2, text):
+        return only_if(platform == platform_2)
 
-    package_type = '27' if pyver[0] == 2 else 'abi3'
+    def only_on_not(platform_2, text):
+        return only_if(platform != platform_2)
+
+    package_type = '27' if pyver < (3,0) else 'abi3'
 
     return f"""
   test-{platform}-{arch}-{pyver_str_none}:
 
     needs: [build-{platform}-{arch}-{package_type}, sdist]
     runs-on: {platform}-latest
-    {only_on('ubuntu', f'container: {MANYLINUX_CONTAINER}', pyver[0] != 2)}
+    {only_if(platform == 'ubuntu' and pyver >= (3,0), f'container: {MANYLINUX_CONTAINER}')}
 
     steps:
     - uses: actions/checkout@v2
-    {only_on_not('ubuntu', f'''
+    {only_if((platform == 'ubuntu' and pyver < (3,0)) or platform != 'ubuntu', f'''
     - name: Set up Python {pyver_str_dot}
       uses: actions/setup-python@v2
       with:
         python-version: {pyver_str_dot}
         architecture: {'x64' if arch == 64 else 'x86'}
-    ''', pyver[0] != 2)}
+    ''')}
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
@@ -240,12 +243,12 @@ def make_test_job(platform: str, arch: int, pyver: tuple) -> str:
     - name: Uninstall wheel
       shell: bash
       run: {py_cmd} -m pip uninstall -y nsmblib
-    {only_on('windows', f'''
+    {only_if(platform == 'windows' and pyver < (3,0), f'''
     - name: Install Microsoft Visual C++ Compiler for Python 2.7
       uses: crazy-max/ghaction-chocolatey@v1
       with:
         args: install vcpython27
-    ''', pyver[0] == 2)}
+    ''')}
     - name: Install sdist
       shell: bash
       run: {py_cmd} -m pip install *.tar.gz
