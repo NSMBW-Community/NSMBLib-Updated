@@ -3,7 +3,7 @@
 # Edit the Python script in this same folder instead, and then run it to
 # regenerate this file.
 ################################################################
-name: Build
+name: Build and test
 on: [push]
 jobs:
   sdist:
@@ -27,7 +27,7 @@ jobs:
       with:
         name: sdist
         path: dist
-  build-windows:
+  build-windows-32:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -35,6 +35,7 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
+        architecture: x86
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -51,9 +52,426 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: build-windows
+        name: build-windows-32
         path: dist
-  build-macos:
+  test-windows-32-35:
+    needs: [build-windows-32, sdist]
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.5
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.5
+        architecture: x86
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-windows-32
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  test-windows-32-36:
+    needs: [build-windows-32, sdist]
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+        architecture: x86
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-windows-32
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  test-windows-32-37:
+    needs: [build-windows-32, sdist]
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+        architecture: x86
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-windows-32
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  test-windows-32-38:
+    needs: [build-windows-32, sdist]
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+        architecture: x86
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-windows-32
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  test-windows-32-39:
+    needs: [build-windows-32, sdist]
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+        architecture: x86
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-windows-32
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  build-windows-64:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+        architecture: x64
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install --upgrade setuptools wheel packaging
+    - name: Build
+      shell: bash
+      run: |
+        python setup.py bdist_wheel
+    - name: Rename wheel file
+      shell: bash
+      run: |
+        cd dist
+        python ../.github/workflows/rename_wheel.py *.whl - cp35 cp36 cp37 cp38 cp39
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-windows-64
+        path: dist
+  test-windows-64-35:
+    needs: [build-windows-64, sdist]
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.5
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.5
+        architecture: x64
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-windows-64
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  test-windows-64-36:
+    needs: [build-windows-64, sdist]
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+        architecture: x64
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-windows-64
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  test-windows-64-37:
+    needs: [build-windows-64, sdist]
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+        architecture: x64
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-windows-64
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  test-windows-64-38:
+    needs: [build-windows-64, sdist]
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+        architecture: x64
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-windows-64
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  test-windows-64-39:
+    needs: [build-windows-64, sdist]
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+        architecture: x64
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-windows-64
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  build-macos-64:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
@@ -61,6 +479,7 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
+        architecture: x64
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -77,9 +496,204 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: build-macos
+        name: build-macos-64
         path: dist
-  build-ubuntu:
+  test-macos-64-35:
+    needs: [build-macos-64, sdist]
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.5
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.5
+        architecture: x64
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-macos-64
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  test-macos-64-36:
+    needs: [build-macos-64, sdist]
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+        architecture: x64
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-macos-64
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  test-macos-64-37:
+    needs: [build-macos-64, sdist]
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+        architecture: x64
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-macos-64
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  test-macos-64-38:
+    needs: [build-macos-64, sdist]
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+        architecture: x64
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-macos-64
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  test-macos-64-39:
+    needs: [build-macos-64, sdist]
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+        architecture: x64
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-macos-64
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        python -m pip uninstall -y nsmblib
+        python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  build-ubuntu-64:
     runs-on: ubuntu-latest
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
@@ -107,5 +721,180 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: build-ubuntu
+        name: build-ubuntu-64
         path: dist
+  test-ubuntu-64-35:
+    needs: [build-ubuntu-64, sdist]
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-ubuntu-64
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        /opt/python/cp35-cp35m/bin/python -m pip install --upgrade pip
+        /opt/python/cp35-cp35m/bin/python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        /opt/python/cp35-cp35m/bin/python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        /opt/python/cp35-cp35m/bin/python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        /opt/python/cp35-cp35m/bin/python -m pip uninstall -y nsmblib
+        /opt/python/cp35-cp35m/bin/python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        /opt/python/cp35-cp35m/bin/python -m pytest
+  test-ubuntu-64-36:
+    needs: [build-ubuntu-64, sdist]
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-ubuntu-64
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        /opt/python/cp36-cp36m/bin/python -m pip install --upgrade pip
+        /opt/python/cp36-cp36m/bin/python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        /opt/python/cp36-cp36m/bin/python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        /opt/python/cp36-cp36m/bin/python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        /opt/python/cp36-cp36m/bin/python -m pip uninstall -y nsmblib
+        /opt/python/cp36-cp36m/bin/python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        /opt/python/cp36-cp36m/bin/python -m pytest
+  test-ubuntu-64-37:
+    needs: [build-ubuntu-64, sdist]
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-ubuntu-64
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        /opt/python/cp37-cp37m/bin/python -m pip install --upgrade pip
+        /opt/python/cp37-cp37m/bin/python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        /opt/python/cp37-cp37m/bin/python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        /opt/python/cp37-cp37m/bin/python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        /opt/python/cp37-cp37m/bin/python -m pip uninstall -y nsmblib
+        /opt/python/cp37-cp37m/bin/python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        /opt/python/cp37-cp37m/bin/python -m pytest
+  test-ubuntu-64-38:
+    needs: [build-ubuntu-64, sdist]
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-ubuntu-64
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        /opt/python/cp38-cp38/bin/python -m pip install --upgrade pip
+        /opt/python/cp38-cp38/bin/python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        /opt/python/cp38-cp38/bin/python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        /opt/python/cp38-cp38/bin/python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        /opt/python/cp38-cp38/bin/python -m pip uninstall -y nsmblib
+        /opt/python/cp38-cp38/bin/python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        /opt/python/cp38-cp38/bin/python -m pytest
+  test-ubuntu-64-39:
+    needs: [build-ubuntu-64, sdist]
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-ubuntu-64
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        /opt/python/cp39-cp39/bin/python -m pip install --upgrade pip
+        /opt/python/cp39-cp39/bin/python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        /opt/python/cp39-cp39/bin/python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        /opt/python/cp39-cp39/bin/python -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        /opt/python/cp39-cp39/bin/python -m pip uninstall -y nsmblib
+        /opt/python/cp39-cp39/bin/python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        /opt/python/cp39-cp39/bin/python -m pytest

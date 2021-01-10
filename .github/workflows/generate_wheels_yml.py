@@ -1,8 +1,8 @@
 # Script for auto-generating wheels.yml.
 
 PLATFORMS = ['windows', 'macos', 'ubuntu']
-CPYTHON_SUPPORT_VERSIONS = [(3,5), (3,6), (3,7), (3,8), (3,9)]
-CPYTHON_BUILD_VERSION = CPYTHON_SUPPORT_VERSIONS[-1]
+CPYTHON_TEST_VERSIONS = [(3,5), (3,6), (3,7), (3,8), (3,9)]
+CPYTHON_BUILD_VERSION = CPYTHON_TEST_VERSIONS[-1]
 MANYLINUX_CONTAINER = 'quay.io/pypa/manylinux2014_x86_64'
 
 
@@ -65,7 +65,7 @@ def make_sdist_job(pyver: tuple) -> str:
     """
 
 
-def make_build_job(platform: str, pyver: tuple) -> str:
+def make_build_job(platform: str, arch: int, pyver: tuple) -> str:
     """
     Make a build job for the specified platform and Python version
     """
@@ -77,10 +77,10 @@ def make_build_job(platform: str, pyver: tuple) -> str:
     def only_on_not(platform_2, text):
         return text if (platform != platform_2) else ''
 
-    interpreter_tags = ' '.join(f'cp{a}{b}' for a, b in CPYTHON_SUPPORT_VERSIONS)
+    interpreter_tags = ' '.join(f'cp{a}{b}' for a, b in CPYTHON_TEST_VERSIONS)
 
     return f"""
-  build-{platform}:
+  build-{platform}-{arch}:
 
     runs-on: {platform}-latest
     {only_on('ubuntu', f'container: {MANYLINUX_CONTAINER}')}
@@ -92,6 +92,7 @@ def make_build_job(platform: str, pyver: tuple) -> str:
       uses: actions/setup-python@v2
       with:
         python-version: {pyver_str_dot}
+        architecture: {'x64' if arch == 64 else 'x86'}
     ''')}
     - name: Install dependencies
       run: |
@@ -118,24 +119,92 @@ def make_build_job(platform: str, pyver: tuple) -> str:
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: build-{platform}
+        name: build-{platform}-{arch}
         path: dist
+    """
+
+
+def make_test_job(platform: str, arch: int, pyver: tuple) -> str:
+    """
+    Make a test job for the specified platform and Python version
+    (tests both the built wheel and the sdist)
+    """
+    pyver_str_dot, pyver_str_none, py_cmd = strings_for(platform, pyver)
+
+    def only_on(platform_2, text):
+        return text if (platform == platform_2) else ''
+
+    def only_on_not(platform_2, text):
+        return text if (platform != platform_2) else ''
+
+    return f"""
+  test-{platform}-{arch}-{pyver_str_none}:
+
+    needs: [build-{platform}-{arch}, sdist]
+    runs-on: {platform}-latest
+    {only_on('ubuntu', f'container: {MANYLINUX_CONTAINER}')}
+
+    steps:
+    - uses: actions/checkout@v2
+    {only_on_not('ubuntu', f'''
+    - name: Set up Python {pyver_str_dot}
+      uses: actions/setup-python@v2
+      with:
+        python-version: {pyver_str_dot}
+        architecture: {'x64' if arch == 64 else 'x86'}
+    ''')}
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-{platform}-{arch}
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        {py_cmd} -m pip install --upgrade pip
+        {py_cmd} -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        {py_cmd} -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        {py_cmd} -m pytest
+    - name: Uninstall wheel and install sdist
+      shell: bash
+      run: |
+        {py_cmd} -m pip uninstall -y nsmblib
+        {py_cmd} -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        {py_cmd} -m pytest
     """
 
 
 # YAML header
 yml = ["""
-name: Build
+name: Build and test
 on: [push]
 
 jobs:
 """]
 
 
-# Make one build per platform (abi3)
+# Make one build per platform (abi3),
+# and perform one test per platform / Python version combo
 yml.append(make_sdist_job(CPYTHON_BUILD_VERSION))
-for platform in PLATFORMS:
-    yml.append(make_build_job(platform, CPYTHON_BUILD_VERSION))
+for arch in [32, 64]:
+    for platform in PLATFORMS:
+        if arch == 32 and platform != 'windows':
+            # GHA actions/setup-python only provides 32-bit Python builds for Windows
+            continue
+        yml.append(make_build_job(platform, arch, CPYTHON_BUILD_VERSION))
+        for pyver in CPYTHON_TEST_VERSIONS:
+            yml.append(make_test_job(platform, arch, pyver))
 
 
 # Write the output file
