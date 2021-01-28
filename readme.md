@@ -1,25 +1,35 @@
 NSMBLib-Updated
 ===============
 
-**NSMBLib** is a small accelerator module used by the Reggie! NSMBW Level Editor and the Puzzle NSMBW Tileset Editor to improve performance when loading and/or saving files. It is an optional dependency in both applications.
+**NSMBLib** is a small accelerator module used by the Reggie! NSMBW Level
+Editor and the Puzzle NSMBW Tileset Editor to improve performance when loading
+and/or saving files. It is an optional dependency in both applications.
 
-As the original NSMBLib has been abandoned for years, **NSMBLib-Updated** is a currently maintained fork, which adds support for Python 3.
+As the original NSMBLib has been abandoned for years, **NSMBLib-Updated** is a
+currently maintained fork, which adds support for Python 3.
 
 
 Installation
 ------------
 
-NSMBLib-Updated can be installed from PyPI with pip: `pip install nsmblib`. It is also often included with builds of Reggie! and Puzzle.
+NSMBLib-Updated can be installed from PyPI with pip: `pip install nsmblib`. It
+is also often included with builds of Reggie! and Puzzle.
 
 
 Versions
 --------
 
-There are two main versions of the original NSMBLib in circulation, 0.4 (bundled with Reggie!) and 0.5 (bundled with Puzzle). Version 0.5 adds an LZ11 compression function (used by Puzzle), but it does not actually work correctly and produces mangled output data.
+There are two main versions of the original NSMBLib in circulation, 0.4
+(bundled with Reggie!) and 0.5 (bundled with Puzzle). Version 0.5 adds an LZ11
+compression function (used by Puzzle), but it does not actually work correctly
+and produces mangled output data.
 
-NSMBLib-Updated includes a working LZ11 compression function, and is thus API-compatible with NSMBLib 0.5 (and backwards-compatible with 0.4).
+NSMBLib-Updated includes a working LZ11 compression function, and is thus
+API-compatible with NSMBLib 0.5 (and backwards-compatible with 0.4).
 
-Since every release of NSMBLib-Updated has the exact same API as NSMBLib 0.5, NSMBLib-Updated uses calendar versioning to distinguish releases (which only ever fix bugs or broaden compatibility).
+Since every release of NSMBLib-Updated has the exact same API as NSMBLib 0.5,
+NSMBLib-Updated uses calendar versioning to distinguish releases (which only
+ever fix bugs or broaden compatibility).
 
 
 API
@@ -32,7 +42,10 @@ API
 - `nsmblib.compress11LZS(data: bytes) -> bytes`:
   Compresses data into LZ11 format.
 - `nsmblib.decodeTileset(data: bytes) -> bytes`:
-  Decode uncompressed NSMBW tileset image data to a 1024x256 pixel array in ARGB32 Premultiplied color format. You can convert this to a PyQt QImage like so: `image = QtGui.QImage(decodedData, 1024, 256, 4096, QtGui.QImage.Format_ARGB32_Premultiplied)`
+  Decodes uncompressed NSMBW tileset image data to a 1024x256 pixel array in
+  ARGB32 Premultiplied color format. You can convert this to a PyQt QImage like
+  so:
+  `image = QtGui.QImage(decodedData, 1024, 256, 4096, QtGui.QImage.Format_ARGB32_Premultiplied)`
 - `nsmblib.decodeTilesetNoAlpha(data: bytes) -> bytes`:
   Same as `decodeTileset()`, but locks the alpha channel for all pixels to 255.
 
@@ -63,5 +76,5 @@ Extracted from nsmblibmodule.c:
 Licensing
 ---------
 
-NSMBLib and NSMBLib-Updated are released under the GNU General Public License v2.
-See the license file for more information.
+NSMBLib and NSMBLib-Updated are released under the GNU General Public License
+v2. See the license file for more information.
