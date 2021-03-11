@@ -1,9 +1,16 @@
 # Script for auto-generating wheels.yml.
 
+# Note: we build with the *oldest* Python version we support, not the
+# latest, because "The Stable ABI is not generally forward-compatible:
+# an extension built and tested with CPython 3.10 will not generally be
+# compatible with CPython 3.9." -- PEP 652
+
 PLATFORMS = ['windows', 'macos', 'ubuntu']
-CPYTHON_TEST_VERSIONS = [(2,7), (3,5), (3,6), (3,7), (3,8), (3,9)]
-CPYTHON_2_BUILD_VERSION = (2,7)
-CPYTHON_3_BUILD_VERSION = CPYTHON_TEST_VERSIONS[-1]
+CPYTHON_2_TEST_VERSIONS = [(2,7)]
+CPYTHON_3_TEST_VERSIONS = [(3,5), (3,6), (3,7), (3,8), (3,9)]
+CPYTHON_TEST_VERSIONS = CPYTHON_2_TEST_VERSIONS + CPYTHON_3_TEST_VERSIONS
+CPYTHON_2_BUILD_VERSION = CPYTHON_2_TEST_VERSIONS[0]
+CPYTHON_3_BUILD_VERSION = CPYTHON_3_TEST_VERSIONS[0]
 MANYLINUX_CONTAINER = 'quay.io/pypa/manylinux2014_x86_64'
 
 
