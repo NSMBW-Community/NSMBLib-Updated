@@ -7,7 +7,7 @@
 
 PLATFORMS = ['windows', 'macos', 'ubuntu']
 CPYTHON_2_TEST_VERSIONS = [(2,7)]
-CPYTHON_3_TEST_VERSIONS = [(3,5), (3,6), (3,7), (3,8), (3,9)]
+CPYTHON_3_TEST_VERSIONS = [(3,5), (3,6), (3,7), (3,8), (3,9), (3,10)]
 CPYTHON_TEST_VERSIONS = CPYTHON_2_TEST_VERSIONS + CPYTHON_3_TEST_VERSIONS
 CPYTHON_2_BUILD_VERSION = CPYTHON_2_TEST_VERSIONS[0]
 CPYTHON_3_BUILD_VERSION = CPYTHON_3_TEST_VERSIONS[0]
@@ -58,7 +58,7 @@ def make_sdist_job(pyver: tuple) -> str:
     - name: Set up Python {pyver_str_dot}
       uses: actions/setup-python@v2
       with:
-        python-version: {pyver_str_dot}
+        python-version: "{pyver_str_dot}"
     - name: Install dependencies
       run: |
         {py_cmd} -m pip install --upgrade pip
@@ -159,7 +159,7 @@ def make_build_job(platform: str, arch: int, pyver: tuple) -> str:
     - name: Set up Python {pyver_str_dot}
       uses: actions/setup-python@v2
       with:
-        python-version: {pyver_str_dot}
+        python-version: "{pyver_str_dot}"
         architecture: {'x64' if arch == 64 else 'x86'}
     ''')}
     - name: Install dependencies
@@ -224,7 +224,7 @@ def make_test_job(platform: str, arch: int, pyver: tuple) -> str:
     - name: Set up Python {pyver_str_dot}
       uses: actions/setup-python@v2
       with:
-        python-version: {pyver_str_dot}
+        python-version: "{pyver_str_dot}"
         architecture: {'x64' if arch == 64 else 'x86'}
     ''')}
     - name: Download build artifact
