@@ -810,7 +810,6 @@ jobs:
         /opt/python/cp36-cp36m/bin/python -m auditwheel repair -w dist/wheelhouse/ dist/*.whl
         rm dist/*.whl
         mv dist/wheelhouse/* dist/
-        rm dist/*manylinux1*
         rm -rf dist/wheelhouse
     - name: Rename wheel file
       shell: bash
