@@ -7,7 +7,7 @@
 
 PLATFORMS = ['windows', 'macos', 'ubuntu']
 CPYTHON_2_TEST_VERSIONS = [(2,7)]
-CPYTHON_3_TEST_VERSIONS = [(3,5), (3,6), (3,7), (3,8), (3,9), (3,10)]
+CPYTHON_3_TEST_VERSIONS = [(3,6), (3,7), (3,8), (3,9), (3,10)]
 CPYTHON_TEST_VERSIONS = CPYTHON_2_TEST_VERSIONS + CPYTHON_3_TEST_VERSIONS
 CPYTHON_2_BUILD_VERSION = CPYTHON_2_TEST_VERSIONS[0]
 CPYTHON_3_BUILD_VERSION = CPYTHON_3_TEST_VERSIONS[0]
@@ -124,12 +124,6 @@ def make_build_job(platform: str, arch: int, pyver: tuple) -> str:
       with:
         python-version: 2.7
         architecture: {'x64' if arch == 64 else 'x86'}
-    {only_on('windows', f'''
-    - name: Install Microsoft Visual C++ Compiler for Python 2.7
-      uses: crazy-max/ghaction-chocolatey@v1
-      with:
-        args: install vcpython27
-    ''')}
     - name: Install dependencies
       run: |
         {py_cmd} -m pip install --upgrade pip
@@ -250,12 +244,6 @@ def make_test_job(platform: str, arch: int, pyver: tuple) -> str:
     - name: Uninstall wheel
       shell: bash
       run: {py_cmd} -m pip uninstall -y nsmblib
-    {only_if(platform == 'windows' and pyver < (3,0), f'''
-    - name: Install Microsoft Visual C++ Compiler for Python 2.7
-      uses: crazy-max/ghaction-chocolatey@v1
-      with:
-        args: install vcpython27
-    ''')}
     - name: Install sdist
       shell: bash
       run: {py_cmd} -m pip install *.tar.gz
@@ -280,12 +268,22 @@ jobs:
 yml.append(make_sdist_job(CPYTHON_3_BUILD_VERSION))
 for arch in [32, 64]:
     for platform in PLATFORMS:
+
         if arch == 32 and platform != 'windows':
             # GHA actions/setup-python only provides 32-bit Python builds for Windows
             continue
-        yml.append(make_build_job(platform, arch, CPYTHON_2_BUILD_VERSION))
+
+        if platform != 'windows':
+            # Microsoft Visual C++ Compiler for Python 2.7 can no longer
+            # be legally used in CI contexts
+            yml.append(make_build_job(platform, arch, CPYTHON_2_BUILD_VERSION))
+
         yml.append(make_build_job(platform, arch, CPYTHON_3_BUILD_VERSION))
+
         for pyver in CPYTHON_TEST_VERSIONS:
+            if platform == 'windows' and pyver == (2,7):
+                # MS VC++ Compiler for Py2.7 again (see above)
+                continue
             yml.append(make_test_job(platform, arch, pyver))
 
 
