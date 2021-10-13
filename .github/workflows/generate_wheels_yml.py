@@ -1,16 +1,22 @@
 # Script for auto-generating wheels.yml.
 
-# Note: we build with the *oldest* Python version we support, not the
+# Note: we build with the *oldest* available Python version, not the
 # latest, because "The Stable ABI is not generally forward-compatible:
 # an extension built and tested with CPython 3.10 will not generally be
 # compatible with CPython 3.9." -- PEP 652
 
+# Specifically, we build with the oldest Python version available in the
+# manylinux container (since doing otherwise would be a logistical
+# nightmare), but still test with older 3.x versions because in practice
+# they generally *are* forward-compatible for relatively simple
+# extension modules.
+
 PLATFORMS = ['windows', 'macos', 'ubuntu']
 CPYTHON_2_TEST_VERSIONS = [(2,7)]
-CPYTHON_3_TEST_VERSIONS = [(3,6), (3,7), (3,8), (3,9), (3,10)]
+CPYTHON_3_TEST_VERSIONS = [(3,5), (3,6), (3,7), (3,8), (3,9), (3,10)]
 CPYTHON_TEST_VERSIONS = CPYTHON_2_TEST_VERSIONS + CPYTHON_3_TEST_VERSIONS
 CPYTHON_2_BUILD_VERSION = CPYTHON_2_TEST_VERSIONS[0]
-CPYTHON_3_BUILD_VERSION = CPYTHON_3_TEST_VERSIONS[0]
+CPYTHON_3_BUILD_VERSION = (3,6)
 MANYLINUX_CONTAINER = 'quay.io/pypa/manylinux2014_x86_64'
 
 
@@ -29,7 +35,7 @@ def strings_for(platform: str, pyver: tuple) -> (str, str, str):
         # <3.8 have to be in the form "cpXY-cpXYm"; >=3.8 have to be in the form "cpXY-cpXY"
         if pyver >= (3,8):
             py_cmd = f'/opt/python/cp{pyver_str_none}-cp{pyver_str_none}/bin/python'
-        elif pyver >= (3,0):
+        elif pyver >= CPYTHON_3_BUILD_VERSION:
             py_cmd = f'/opt/python/cp{pyver_str_none}-cp{pyver_str_none}m/bin/python'
         else:
             py_cmd = 'python'
@@ -209,11 +215,11 @@ def make_test_job(platform: str, arch: int, pyver: tuple) -> str:
 
     needs: [build-{platform}-{arch}-{package_type}, sdist]
     runs-on: {platform}-latest
-    {only_if(platform == 'ubuntu' and pyver >= (3,0), f'container: {MANYLINUX_CONTAINER}')}
+    {only_if(platform == 'ubuntu' and pyver >= CPYTHON_3_BUILD_VERSION, f'container: {MANYLINUX_CONTAINER}')}
 
     steps:
     - uses: actions/checkout@v2
-    {only_if((platform == 'ubuntu' and pyver < (3,0)) or platform != 'ubuntu', f'''
+    {only_if((platform == 'ubuntu' and pyver < CPYTHON_3_BUILD_VERSION) or platform != 'ubuntu', f'''
     - name: Set up Python {pyver_str_dot}
       uses: actions/setup-python@v2
       with:

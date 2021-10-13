@@ -48,12 +48,52 @@ jobs:
       shell: bash
       run: |
         cd dist
-        python ../.github/workflows/rename_wheel.py *.whl - cp36 cp37 cp38 cp39 cp310
+        python ../.github/workflows/rename_wheel.py *.whl - cp35 cp36 cp37 cp38 cp39 cp310
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
         name: build-windows-32-abi3
         path: dist
+  test-windows-32-35:
+    needs: [build-windows-32-abi3, sdist]
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.5
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.5"
+        architecture: x86
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-windows-32-abi3
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel
+      shell: bash
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
   test-windows-32-36:
     needs: [build-windows-32-abi3, sdist]
     runs-on: windows-latest
@@ -275,12 +315,52 @@ jobs:
       shell: bash
       run: |
         cd dist
-        python ../.github/workflows/rename_wheel.py *.whl - cp36 cp37 cp38 cp39 cp310
+        python ../.github/workflows/rename_wheel.py *.whl - cp35 cp36 cp37 cp38 cp39 cp310
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
         name: build-windows-64-abi3
         path: dist
+  test-windows-64-35:
+    needs: [build-windows-64-abi3, sdist]
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.5
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.5"
+        architecture: x64
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-windows-64-abi3
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel
+      shell: bash
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
   test-windows-64-36:
     needs: [build-windows-64-abi3, sdist]
     runs-on: windows-latest
@@ -524,7 +604,7 @@ jobs:
       shell: bash
       run: |
         cd dist
-        python ../.github/workflows/rename_wheel.py *.whl - cp36 cp37 cp38 cp39 cp310
+        python ../.github/workflows/rename_wheel.py *.whl - cp35 cp36 cp37 cp38 cp39 cp310
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
@@ -544,6 +624,46 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: build-macos-64-27
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel
+      shell: bash
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  test-macos-64-35:
+    needs: [build-macos-64-abi3, sdist]
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.5
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.5"
+        architecture: x64
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-macos-64-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
@@ -815,7 +935,7 @@ jobs:
       shell: bash
       run: |
         cd dist
-        /opt/python/cp36-cp36m/bin/python ../.github/workflows/rename_wheel.py *.whl - cp36 cp37 cp38 cp39 cp310
+        /opt/python/cp36-cp36m/bin/python ../.github/workflows/rename_wheel.py *.whl - cp35 cp36 cp37 cp38 cp39 cp310
     - name: Upload artifacts
       uses: actions/upload-artifact@v1
       with:
@@ -835,6 +955,46 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: build-ubuntu-64-27
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: sdist
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+    - name: Install wheel
+      shell: bash
+      run: |
+        python -m pip install *.whl
+    - name: Test wheel with pytest
+      run: |
+        cd tests
+        python -m pytest
+    - name: Uninstall wheel
+      shell: bash
+      run: python -m pip uninstall -y nsmblib
+    - name: Install sdist
+      shell: bash
+      run: python -m pip install *.tar.gz
+    - name: Test sdist with pytest
+      run: |
+        cd tests
+        python -m pytest
+  test-ubuntu-64-35:
+    needs: [build-ubuntu-64-abi3, sdist]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.5
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.5"
+        architecture: x64
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-ubuntu-64-abi3
     - name: Download sdist artifact
       uses: actions/download-artifact@v2
       with:
