@@ -20,23 +20,37 @@ import typing
 import packaging.tags
 
 
-def split_wheel_filename(fn: str) -> typing.Tuple[str, packaging.tags.Tag, str]:
+def split_wheel_filename(fn: str) -> typing.Tuple[str, typing.FrozenSet[packaging.tags.Tag], str]:
     """
     Split a wheel filename into the string before the platform
     compatibility tag, the tag itself (as packaging.tags.Tag), and
     the string after it.
 
     Example input and output:
-    'libexample-1.2.3-cp39-cp39-darwin.whl'
-    ('libexample-1.2.3-', Tag('cp39', 'cp39', 'darwin'), '.whl')
+    'libexample-1.2.3-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl'
+    ('libexample-1.2.3', {Tag('cp36', 'cp36m', 'manylinux_2_17_x86_64'), Tag('cp36', 'cp36m', 'manylinux2014_x86_64')}, '.whl')
     """
-    tag_start = fn.find('-', fn.find('-')+1)+1
+    tag_start = fn.find('-', fn.find('-') + 1) + 1
     tag_end = fn.rfind('.')
 
     tag_set = packaging.tags.parse_tag(fn[tag_start:tag_end])
-    assert len(tag_set) == 1
-    tag = next(iter(tag_set))
-    return fn[:tag_start], tag, fn[tag_end:]
+    return fn[:tag_start-1], tag_set, fn[tag_end:]
+
+
+def interpreter_version_str_sorting_key(key: str) -> int:
+    """
+    Return a sorting key for an interpreter version string like "cp38" or
+    "cp310".
+    """
+    if key.startswith('cp'):
+        key = key[2:]
+    if key.endswith('m'):  # unlikely, but just in case
+        key = key[:-1]
+
+    major = int(key[0])  # "3"
+    minor = int(key[1:])  # "10"
+
+    return (major, minor)
 
 
 def make_compressed_tag(interpreter: set, abi: set, platform: set) -> str:
@@ -45,7 +59,7 @@ def make_compressed_tag(interpreter: set, abi: set, platform: set) -> str:
     the specified interpreters, ABIs, and platforms.
     """
     return '-'.join([
-        '.'.join(sorted(interpreter)),
+        '.'.join(sorted(interpreter, key=interpreter_version_str_sorting_key)),
         '.'.join(sorted(abi)),
         '.'.join(sorted(platform)),
     ])
@@ -56,8 +70,9 @@ def genericize_filename_for_abi3(fn: str, interpreters: set) -> str:
     Assuming that a wheel with the given filename is actually ABI3,
     generate an appropriate replacement filename for it.
     """
-    start, tag, end = split_wheel_filename(fn)
-    return start + make_compressed_tag(interpreters, {'abi3'}, {tag.platform}) + end
+    start, tags, end = split_wheel_filename(fn)
+    platforms = set(t.platform for t in tags)
+    return start + '-' + make_compressed_tag(interpreters, {'abi3'}, platforms) + end
 
 
 def main():
