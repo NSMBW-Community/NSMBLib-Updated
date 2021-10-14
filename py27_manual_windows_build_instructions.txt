@@ -1,0 +1,60 @@
+Build instructions for Python 2.7 on Windows
+--------------------------------------------
+
+This used to be done automatically on GitHub Actions, but unfortunately, now that Microsoft removed the official download for the Microsoft Visual C++ Compiler for Python 2.7 from their website, that's illegal (as the license only allows for personal use, and not for transfer to third parties such as a private GitHub repo). So from now on, Python 2.7 builds need to be created manually.
+
+I use VirtualBox VMs for this. I'm using Windows 7 because that's the simplest way to guarantee that the builds are compatible with any relatively modern Windows version, as opposed to building with, say, Windows 11. Start with clean 32-bit and 64-bit installations of Windows, and follow the instructions below for each one.
+
+
+Create VM checkpoint 1: start
+
+- Install/update software:
+    - Firefox (to access websites like python.org)
+    - I like to use magic-wormhole for transferring files between the host and guest, so for that, install/update the following:
+        - Python 3 (3.8.10 is the final 3.x build for Win7)
+            - Requires SP1, KB3063858, MSVC++ Redistributable for VS 2015
+        - pip (may have to run ensurepip first)
+        - magic-wormhole
+    - Any other tangential programs that might be useful
+- Transfer/download software:
+    - Python 2.7 installer (2.7.18 is the final 2.x build)
+    - Microsoft Visual C++ Compiler for Python 2.7 installer (VCForPython27.msi, available on archive.org: https://web.archive.org/web/20210106040224/https://download.microsoft.com/download/7/9/6/796EF2E4-801B-4FC4-AB28-B59FBF6D907B/VCForPython27.msi)
+      (note: filesize is about 84 MB, if you're wondering)
+
+Create VM checkpoint 2: Pre-setup complete
+
+- Install Python 2.7
+- (note: you need admin command prompt for the next two steps)
+- Update its pip (19.2.3 -> 20.3.4)
+- Install wheel, setuptools and pytest
+
+Create VM checkpoint 3: Python 2.7 installed
+
+- Install the MSVC++ Compiler for Py27
+  (note: there's no "successfully installed" window, it just closes itself when it's done)
+
+Create VM checkpoint 4: MSVC++ Compiler installed
+
+- Transfer repo source from host
+- Build wheel
+    (32-bit) py -2.7-32 setup.py bdist_wheel
+    (64-bit) py -2.7    setup.py bdist_wheel
+- Transfer wheel to host
+- Transfer latest sdist (from GitHub Actions) from host
+- Test sdist
+    py **** -m pip install *.tar.gz
+    cd tests
+    py **** -m pytest
+
+Revert to checkpoint 3 (before MSVC++ Compiler was installed)
+
+- Transfer repo source from host
+- Transfer wheel from host
+- Test wheel
+    py **** -m pip install *.whl
+    cd tests
+    py **** -m pytest
+
+If all tests succeeded, the wheel is now ready for release.
+
+Repeat the above procedure for the other architecture (32/64-bit).
