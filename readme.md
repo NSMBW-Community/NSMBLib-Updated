@@ -38,16 +38,16 @@ Original NSMBLib API
 - `nsmblib.getVersion() -> int`:
   Returns the minor version number. For example, for NSMBLib 0.5, returns 5.
   NSMBLib-Updated always returns 5.
-- `nsmblib.decompress11LZS(data: bytes) -> bytes`:
+- `nsmblib.decompress11LZS(data: bytes, /) -> bytes`:
   Decompresses LZ11-compressed data.
-- `nsmblib.compress11LZS(data: bytes) -> bytes`:
+- `nsmblib.compress11LZS(data: bytes, /) -> bytes`:
   Compresses data into LZ11 format.
-- `nsmblib.decodeTileset(data: bytes) -> bytes`:
+- `nsmblib.decodeTileset(data: bytes, /) -> bytes`:
   Decodes uncompressed NSMBW tileset image data to a 1024x256 pixel array in
   ARGB32 Premultiplied color format. You can convert this to a PyQt QImage like
   so:
   `image = QtGui.QImage(decodedData, 1024, 256, 4096, QtGui.QImage.Format_ARGB32_Premultiplied)`
-- `nsmblib.decodeTilesetNoAlpha(data: bytes) -> bytes`:
+- `nsmblib.decodeTilesetNoAlpha(data: bytes, /) -> bytes`:
   Same as `decodeTileset()`, but locks the alpha channel for all pixels to 255.
 
 
@@ -62,13 +62,13 @@ recommended.
   Returns the NSMBLib-Updated version number as a 10-digit decimal number. For
   example, on NSMBLib-Updated 2021.10.14.1, this returns 2021101401.
   *Added in 2021.10.14.1.*
-- `nsmblib.decodeTilesetNoPremultiplication(data: bytes) -> bytes`:
+- `nsmblib.decodeTilesetNoPremultiplication(data: bytes, /) -> bytes`:
   Same as `decodeTileset()`, but skips premultiplication. This is a bit more
   accurate than `decodeTileset()` because premultiplication inherently reduces
   color depth on semitransparent pixels. Use `QtGui.QImage.Format_ARGB32` when
   loading this as a PyQt QImage.
   *Added in 2021.10.14.1.*
-- `nsmblib.decodeTilesetNoPremultiplicationNoAlpha(data: bytes) -> bytes`:
+- `nsmblib.decodeTilesetNoPremultiplicationNoAlpha(data: bytes, /) -> bytes`:
   Combination of `decodeTilesetNoPremultiplication()` and
   `decodeTilesetNoAlpha()`.
   *Added in 2021.10.14.1.*
