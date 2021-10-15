@@ -21,22 +21,23 @@ Versions
 
 There are two main versions of the original NSMBLib in circulation, 0.4
 (bundled with Reggie!) and 0.5 (bundled with Puzzle). Version 0.5 adds an LZ11
-compression function (used by Puzzle), but it does not actually work correctly
+compression function (used by Puzzle), but it doesn't actually work correctly
 and produces mangled output data.
 
 NSMBLib-Updated includes a working LZ11 compression function, and is thus
 API-compatible with NSMBLib 0.5 (and backwards-compatible with 0.4).
 
-Since every release of NSMBLib-Updated has the exact same API as NSMBLib 0.5,
-NSMBLib-Updated uses calendar versioning to distinguish releases (which only
-ever fix bugs or broaden compatibility).
+Since NSMBLib-Updated is compatible with NSMBLib 0.5 and its API doesn't change
+often, it uses calendar versioning to distinguish releases (which usually just
+fix bugs or broaden compatibility).
 
 
-API
----
+Original NSMBLib API
+--------------------
 
 - `nsmblib.getVersion() -> int`:
   Returns the minor version number. For example, for NSMBLib 0.5, returns 5.
+  NSMBLib-Updated always returns 5.
 - `nsmblib.decompress11LZS(data: bytes) -> bytes`:
   Decompresses LZ11-compressed data.
 - `nsmblib.compress11LZS(data: bytes) -> bytes`:
@@ -48,6 +49,29 @@ API
   `image = QtGui.QImage(decodedData, 1024, 256, 4096, QtGui.QImage.Format_ARGB32_Premultiplied)`
 - `nsmblib.decodeTilesetNoAlpha(data: bytes) -> bytes`:
   Same as `decodeTileset()`, but locks the alpha channel for all pixels to 255.
+
+
+Additional API in NSMBLib-Updated
+---------------------------------
+
+The version in which each function was added is listed below for each function.
+Detecting their availability with `hasattr()` before attempting to use them is
+recommended.
+
+- `nsmblib.getUpdatedVersion() -> int`:
+  Returns the NSMBLib-Updated version number as a 10-digit decimal number. For
+  example, on NSMBLib-Updated 2021.10.14.1, this returns 2021101401.
+  *Added in 2021.10.14.1.*
+- `nsmblib.decodeTilesetNoPremultiplication(data: bytes) -> bytes`:
+  Same as `decodeTileset()`, but skips premultiplication. This is a bit more
+  accurate than `decodeTileset()` because premultiplication inherently reduces
+  color depth on semitransparent pixels. Use `QtGui.QImage.Format_ARGB32` when
+  loading this as a PyQt QImage.
+  *Added in 2021.10.14.1.*
+- `nsmblib.decodeTilesetNoPremultiplicationNoAlpha(data: bytes) -> bytes`:
+  Combination of `decodeTilesetNoPremultiplication()` and
+  `decodeTilesetNoAlpha()`.
+  *Added in 2021.10.14.1.*
 
 
 Original Readme

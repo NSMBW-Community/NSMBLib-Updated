@@ -33,6 +33,7 @@
  */
 
 #define CURRENT_VERSION 5
+#define CURRENT_UPDATED_VERSION 2021101401ULL
 
 static PyObject *nsmblib_getVersion(PyObject *self, PyObject *args) {
     /* Gets the current version of the NSMB module.
@@ -41,6 +42,15 @@ static PyObject *nsmblib_getVersion(PyObject *self, PyObject *args) {
      */
 
      return Py_BuildValue("i", CURRENT_VERSION);
+}
+
+static PyObject *nsmblib_getUpdatedVersion(PyObject *self, PyObject *args) {
+    /* Gets the current version of the NSMBLib-Updated module.
+     * Returns: int (10-digit version number, e.g. 2021101401 for ver. 2021.10.14.01)
+     * Parameters: none
+     */
+
+     return Py_BuildValue("K", CURRENT_UPDATED_VERSION);
 }
 
 static PyObject *nsmblib_decompress11LZS(PyObject *self, PyObject *args) {
@@ -347,7 +357,7 @@ static PyObject *nsmblib_compress11LZS(PyObject *self, PyObject *args) {
     return retvalue;
 }
 
-static PyObject *nsmblib_decodeTilesetOptionalAlpha(PyObject *self, PyObject *args, int usealpha) {
+static PyObject *nsmblib_decodeTilesetOptionalAlpha(PyObject *self, PyObject *args, int usealpha, int premultiply) {
     /* Decodes an uncompressed RGB5A4 tileset into ARGB32 Premultiplied.
      * Assumes that the size of the decoded tileset is 1024x512.
      * Returns: bytes (containing the decoded data)
@@ -414,16 +424,18 @@ static PyObject *nsmblib_decodeTilesetOptionalAlpha(PyObject *self, PyObject *ar
                     u8 blue = ab & 0xF;
                     u32 x = alpha255 << 24 | red << 20 | red << 16 | green << 12 | green << 8 | blue << 4 | blue;
 
-                    /* this code from Qt's PREMUL() inline function in
-                     * src/gui/painting/qdrawhelper_p.h */
-                    u32 al = x >> 24;
-                    u32 t = (x & 0xff00ff) * al;
-                    t = (t + ((t >> 8) & 0xff00ff) + 0x800080) >> 8;
-                    t &= 0xff00ff;
-                    x = ((x >> 8) & 0xff) * al;
-                    x = (x + ((x >> 8) & 0xff) + 0x80);
-                    x &= 0xff00;
-                    x |= t | (al << 24);
+                    if (premultiply) {
+                        /* this code from Qt's PREMUL() inline function in
+                         * src/gui/painting/qdrawhelper_p.h */
+                        u32 al = x >> 24;
+                        u32 t = (x & 0xff00ff) * al;
+                        t = (t + ((t >> 8) & 0xff00ff) + 0x800080) >> 8;
+                        t &= 0xff00ff;
+                        x = ((x >> 8) & 0xff) * al;
+                        x = (x + ((x >> 8) & 0xff) + 0x80);
+                        x &= 0xff00;
+                        x |= t | (al << 24);
+                    }
 
                     output[pos] = x;
 
@@ -457,16 +469,26 @@ static PyObject *nsmblib_decodeTilesetOptionalAlpha(PyObject *self, PyObject *ar
 }
 
 static PyObject *nsmblib_decodeTileset(PyObject *self, PyObject *args) {
-    return nsmblib_decodeTilesetOptionalAlpha(self, args, 1);
+    return nsmblib_decodeTilesetOptionalAlpha(self, args, 1, 1);
 }
 
 static PyObject *nsmblib_decodeTilesetNoAlpha(PyObject *self, PyObject *args) {
-    return nsmblib_decodeTilesetOptionalAlpha(self, args, 0);
+    return nsmblib_decodeTilesetOptionalAlpha(self, args, 0, 1);
+}
+
+static PyObject *nsmblib_decodeTilesetNoPremultiplication(PyObject *self, PyObject *args) {
+    return nsmblib_decodeTilesetOptionalAlpha(self, args, 1, 0);
+}
+
+static PyObject *nsmblib_decodeTilesetNoPremultiplicationNoAlpha(PyObject *self, PyObject *args) {
+    return nsmblib_decodeTilesetOptionalAlpha(self, args, 0, 0);
 }
 
 static PyMethodDef NSMBLibMethods[] = {
     {"getVersion", nsmblib_getVersion, METH_VARARGS,
      "Gets the current version of the NSMB module."},
+    {"getUpdatedVersion", nsmblib_getUpdatedVersion, METH_VARARGS,
+     "Gets the current version of the NSMBLib-Updated module."},
     {"decompress11LZS", nsmblib_decompress11LZS, METH_VARARGS,
      "Decompresses a file using LZSS 0x11 variant."},
     {"compress11LZS", nsmblib_compress11LZS, METH_VARARGS,
@@ -475,6 +497,10 @@ static PyMethodDef NSMBLibMethods[] = {
      "Decodes an uncompressed RGB4A3 tileset into ARGB32 Premultiplied."},
     {"decodeTilesetNoAlpha", nsmblib_decodeTilesetNoAlpha, METH_VARARGS,
      "Decodes an uncompressed RGB4A3 tileset into ARGB32 Premultiplied with A fixed at maximum."},
+    {"decodeTilesetNoPremultiplication", nsmblib_decodeTilesetNoPremultiplication, METH_VARARGS,
+     "Decodes an uncompressed RGB4A3 tileset into ARGB32 (not premultiplied)."},
+    {"decodeTilesetNoPremultiplicationNoAlpha", nsmblib_decodeTilesetNoPremultiplicationNoAlpha, METH_VARARGS,
+     "Decodes an uncompressed RGB4A3 tileset into ARGB32 (not premultiplied) with A fixed at maximum."},
     {NULL, NULL, 0, NULL}
 };
 

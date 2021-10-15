@@ -25,7 +25,7 @@ def premultiply(r, g, b, a):
     return r, g, b, a
 
 
-def do_test_tileset_decode_function(func, alphaEnabled):
+def do_test_tileset_decode_function(func, alphaEnabled, premultiplyEnabled):
     """
     Generic function for testing decodeTileset() and decodeTilesetNoAlpha()
     """
@@ -77,7 +77,8 @@ def do_test_tileset_decode_function(func, alphaEnabled):
         # Compare
         error_msg = '%04x decoded incorrectly' % d
         if alphaEnabled:
-            red, green, blue, alpha = premultiply(red, green, blue, alpha)
+            if premultiplyEnabled:
+                red, green, blue, alpha = premultiply(red, green, blue, alpha)
             if alpha == 0:
                 assert a == 0, error_msg
             else:
@@ -90,11 +91,25 @@ def test_decodeTileset():
     """
     Test decodeTileset()
     """
-    do_test_tileset_decode_function(nsmblib.decodeTileset, True)
+    do_test_tileset_decode_function(nsmblib.decodeTileset, True, True)
 
 
 def test_decodeTilesetNoAlpha():
     """
     Test decodeTilesetNoAlpha()
     """
-    do_test_tileset_decode_function(nsmblib.decodeTilesetNoAlpha, False)
+    do_test_tileset_decode_function(nsmblib.decodeTilesetNoAlpha, False, True)
+
+
+def test_decodeTilesetNoPremultiplication():
+    """
+    Test decodeTilesetNoPremultiplication()
+    """
+    do_test_tileset_decode_function(nsmblib.decodeTilesetNoPremultiplication, True, False)
+
+
+def test_decodeTilesetNoPremultiplicationNoAlpha():
+    """
+    Test decodeTilesetNoPremultiplicationNoAlpha()
+    """
+    do_test_tileset_decode_function(nsmblib.decodeTilesetNoPremultiplicationNoAlpha, False, False)
